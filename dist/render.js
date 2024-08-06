@@ -408,16 +408,6 @@ var getRemoteAssetPromise = function getRemoteAssetPromise(url) {
     });
   });
 };
-var requestKinds = {
-  0: 'Unknown',
-  1: 'Style',
-  2: 'Source',
-  3: 'Tile',
-  4: 'Glyphs',
-  5: 'SpriteImage',
-  6: 'SpriteJSON',
-  7: 'ImageSource'
-};
 
 /**
  * requestHandler constructs a request handler for the map to load resources.
@@ -425,7 +415,7 @@ var requestKinds = {
  * @param {String} - path to tilesets (optional)
  * @param {String} - Mapbox GL token (optional; required for any Mapbox hosted resources)
  */
-var getDefaultRequestHandlers = function getDefaultRequestHandlers(tilePath, token) {
+var requestHandler = function requestHandler(tilePath, token) {
   return function (_ref, callback) {
     var url = _ref.url,
       kind = _ref.kind;
@@ -435,54 +425,71 @@ var getDefaultRequestHandlers = function getDefaultRequestHandlers(tilePath, tok
       logger.error(msg);
       return callback(new Error(msg));
     }
-    var defaultRequestHandlers = {
-      Source: function Source() {
-        if (isMBTilesURL(url)) {
-          getLocalTileJSON(tilePath, url, callback);
-        } else if (isMapbox) {
-          // This seems to be due to a bug in how the mapbox tile
-          // JSON is handled within mapbox-gl-native
-          // since it returns fully resolved tiles!
-          getRemoteAsset(normalizeMapboxSourceURL(url, token), callback);
-        } else {
-          getRemoteAsset(url, callback);
-        }
-      },
-      Tile: function Tile() {
-        if (isMBTilesURL(url)) {
-          getLocalTile(tilePath, url, callback);
-        } else if (isMapbox) {
-          getRemoteTile(normalizeMapboxTileURL(url, token), callback);
-        } else {
-          getRemoteTile(url, callback);
-        }
-      },
-      Glyphs: function Glyphs() {
-        getRemoteAsset(isMapbox ? normalizeMapboxGlyphURL(url, token) : _url["default"].parse(url), callback);
-      },
-      SpriteImage: function SpriteImage() {
-        getRemoteAsset(isMapbox ? normalizeMapboxSpriteURL(url, token) : _url["default"].parse(url), callback);
-      },
-      SpriteJSON: function SpriteJSON() {
-        getRemoteAsset(isMapbox ? normalizeMapboxSpriteURL(url, token) : _url["default"].parse(url), callback);
-      },
-      ImageSource: function ImageSource() {
-        getRemoteAsset(_url["default"].parse(url), callback);
-      },
-      "default": function _default() {
-        var msg = "error Request kind not handled: ".concat(kind);
-        logger.error(msg);
-        return callback(new Error(msg));
-      }
-    };
-    var requestKind = requestKinds[kind];
-    var handler = defaultRequestHandlers[requestKind] || defaultRequestHandlers["default"];
     try {
-      handler();
+      switch (kind) {
+        case 2:
+          {
+            // source
+            if (isMBTilesURL(url)) {
+              getLocalTileJSON(tilePath, url, callback);
+            } else if (isMapbox) {
+              getRemoteAsset(normalizeMapboxSourceURL(url, token), callback);
+            } else {
+              getRemoteAsset(url, callback);
+            }
+            break;
+          }
+        case 3:
+          {
+            // tile
+            if (isMBTilesURL(url)) {
+              getLocalTile(tilePath, url, callback);
+            } else if (isMapbox) {
+              // This seems to be due to a bug in how the mapbox tile
+              // JSON is handled within mapbox-gl-native
+              // since it returns fully resolved tiles!
+              getRemoteTile(normalizeMapboxTileURL(url, token), callback);
+            } else {
+              getRemoteTile(url, callback);
+            }
+            break;
+          }
+        case 4:
+          {
+            // glyph
+            getRemoteAsset(isMapbox ? normalizeMapboxGlyphURL(url, token) : _url["default"].parse(url), callback);
+            break;
+          }
+        case 5:
+          {
+            // sprite image
+            getRemoteAsset(isMapbox ? normalizeMapboxSpriteURL(url, token) : _url["default"].parse(url), callback);
+            break;
+          }
+        case 6:
+          {
+            // sprite json
+            getRemoteAsset(isMapbox ? normalizeMapboxSpriteURL(url, token) : _url["default"].parse(url), callback);
+            break;
+          }
+        case 7:
+          {
+            // image source
+            getRemoteAsset(_url["default"].parse(url), callback);
+            break;
+          }
+        default:
+          {
+            // NOT HANDLED!
+            var _msg = "error Request kind not handled: ".concat(kind);
+            logger.error(_msg);
+            throw new Error(_msg);
+          }
+      }
     } catch (err) {
-      var _msg = "Error while making resource request to: ".concat(url, "\n").concat(err);
-      logger.error(_msg);
-      return callback(_msg);
+      var _msg2 = "Error while making resource request to: ".concat(url, "\n").concat(err);
+      logger.error(_msg2);
+      return callback(_msg2);
     }
   };
 };
@@ -496,7 +503,7 @@ var getDefaultRequestHandlers = function getDefaultRequestHandlers(tilePath, tok
  */
 var loadImage = /*#__PURE__*/function () {
   var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(map, id, _ref2) {
-    var url, _ref2$pixelRatio, pixelRatio, _ref2$sdf, sdf, msg, imgBuffer, _img, img, metadata, data, _msg2;
+    var url, _ref2$pixelRatio, pixelRatio, _ref2$sdf, sdf, msg, imgBuffer, _img, img, metadata, data, _msg3;
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
@@ -547,9 +554,9 @@ var loadImage = /*#__PURE__*/function () {
         case 26:
           _context.prev = 26;
           _context.t0 = _context["catch"](5);
-          _msg2 = "Error loading icon image: ".concat(id, "\n").concat(_context.t0);
-          logger.error(_msg2);
-          throw new Error(_msg2);
+          _msg3 = "Error loading icon image: ".concat(id, "\n").concat(_context.t0);
+          logger.error(_msg3);
+          throw new Error(_msg3);
         case 31:
         case "end":
           return _context.stop();
@@ -689,14 +696,12 @@ var toPNG = /*#__PURE__*/function () {
  * width, height, bounds: [west, south, east, north], ratio, padding
  * @param {String} tilePath - path to directory containing local mbtiles files that are
  * referenced from the style.json as "mbtiles://<tileset>"
- * @param {Object} requestHandler - optional custom request handler
  */
 var render = /*#__PURE__*/function () {
   var _ref7 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5(style) {
     var width,
       height,
       options,
-      requestHandler,
       _options$bounds,
       bounds,
       _options$bearing,
@@ -718,7 +723,6 @@ var render = /*#__PURE__*/function () {
       _options$tilePath,
       tilePath,
       msg,
-      _msg3,
       _msg4,
       _msg5,
       _msg6,
@@ -726,9 +730,10 @@ var render = /*#__PURE__*/function () {
       _msg8,
       _msg9,
       _msg10,
+      _msg11,
       viewport,
       localMbtilesMatches,
-      _msg11,
+      _msg12,
       map,
       buffer,
       _args5 = arguments;
@@ -738,96 +743,95 @@ var render = /*#__PURE__*/function () {
           width = _args5.length > 1 && _args5[1] !== undefined ? _args5[1] : 1024;
           height = _args5.length > 2 && _args5[2] !== undefined ? _args5[2] : 1024;
           options = _args5.length > 3 ? _args5[3] : undefined;
-          requestHandler = _args5.length > 4 && _args5[4] !== undefined ? _args5[4] : null;
           _options$bounds = options.bounds, bounds = _options$bounds === void 0 ? null : _options$bounds, _options$bearing = options.bearing, bearing = _options$bearing === void 0 ? 0 : _options$bearing, _options$pitch = options.pitch, pitch = _options$pitch === void 0 ? 0 : _options$pitch, _options$token = options.token, token = _options$token === void 0 ? null : _options$token, _options$ratio = options.ratio, ratio = _options$ratio === void 0 ? 1 : _options$ratio, _options$padding = options.padding, padding = _options$padding === void 0 ? 0 : _options$padding, _options$images = options.images, images = _options$images === void 0 ? null : _options$images;
           _options$center = options.center, center = _options$center === void 0 ? null : _options$center, _options$zoom = options.zoom, zoom = _options$zoom === void 0 ? null : _options$zoom, _options$tilePath = options.tilePath, tilePath = _options$tilePath === void 0 ? null : _options$tilePath;
           if (style) {
-            _context5.next = 9;
+            _context5.next = 8;
             break;
           }
           msg = 'style is a required parameter';
           throw new Error(msg);
-        case 9:
+        case 8:
           if (width && height) {
-            _context5.next = 12;
+            _context5.next = 11;
             break;
           }
-          _msg3 = 'width and height are required parameters and must be non-zero';
-          throw new Error(_msg3);
-        case 12:
+          _msg4 = 'width and height are required parameters and must be non-zero';
+          throw new Error(_msg4);
+        case 11:
           if (!(center !== null)) {
-            _context5.next = 22;
+            _context5.next = 21;
             break;
           }
           if (!(center.length !== 2)) {
-            _context5.next = 16;
+            _context5.next = 15;
             break;
           }
-          _msg4 = "Center must be longitude,latitude.  Invalid value found: ".concat((0, _toConsumableArray2["default"])(center));
-          throw new Error(_msg4);
-        case 16:
-          if (!(Math.abs(center[0]) > 180)) {
-            _context5.next = 19;
-            break;
-          }
-          _msg5 = "Center longitude is outside world bounds (-180 to 180 deg): ".concat(center[0]);
+          _msg5 = "Center must be longitude,latitude.  Invalid value found: ".concat((0, _toConsumableArray2["default"])(center));
           throw new Error(_msg5);
-        case 19:
-          if (!(Math.abs(center[1]) > 90)) {
-            _context5.next = 22;
+        case 15:
+          if (!(Math.abs(center[0]) > 180)) {
+            _context5.next = 18;
             break;
           }
-          _msg6 = "Center latitude is outside world bounds (-90 to 90 deg): ".concat(center[1]);
+          _msg6 = "Center longitude is outside world bounds (-180 to 180 deg): ".concat(center[0]);
           throw new Error(_msg6);
-        case 22:
-          if (!(zoom !== null && (zoom < 0 || zoom > 22))) {
-            _context5.next = 25;
+        case 18:
+          if (!(Math.abs(center[1]) > 90)) {
+            _context5.next = 21;
             break;
           }
-          _msg7 = "Zoom level is outside supported range (0-22): ".concat(zoom);
+          _msg7 = "Center latitude is outside world bounds (-90 to 90 deg): ".concat(center[1]);
           throw new Error(_msg7);
-        case 25:
-          if (!(bearing !== null && (bearing < 0 || bearing > 360))) {
-            _context5.next = 28;
+        case 21:
+          if (!(zoom !== null && (zoom < 0 || zoom > 22))) {
+            _context5.next = 24;
             break;
           }
-          _msg8 = "bearing is outside supported range (0-360): ".concat(bearing);
+          _msg8 = "Zoom level is outside supported range (0-22): ".concat(zoom);
           throw new Error(_msg8);
-        case 28:
-          if (!(pitch !== null && (pitch < 0 || pitch > 60))) {
-            _context5.next = 31;
+        case 24:
+          if (!(bearing !== null && (bearing < 0 || bearing > 360))) {
+            _context5.next = 27;
             break;
           }
-          _msg9 = "pitch is outside supported range (0-60): ".concat(pitch);
+          _msg9 = "bearing is outside supported range (0-360): ".concat(bearing);
           throw new Error(_msg9);
-        case 31:
+        case 27:
+          if (!(pitch !== null && (pitch < 0 || pitch > 60))) {
+            _context5.next = 30;
+            break;
+          }
+          _msg10 = "pitch is outside supported range (0-60): ".concat(pitch);
+          throw new Error(_msg10);
+        case 30:
           if (!(bounds !== null)) {
-            _context5.next = 40;
+            _context5.next = 39;
             break;
           }
           if (!(bounds.length !== 4)) {
-            _context5.next = 35;
+            _context5.next = 34;
             break;
           }
-          _msg10 = "Bounds must be west,south,east,north.  Invalid value found: ".concat((0, _toConsumableArray2["default"])(bounds));
-          throw new Error(_msg10);
-        case 35:
+          _msg11 = "Bounds must be west,south,east,north.  Invalid value found: ".concat((0, _toConsumableArray2["default"])(bounds));
+          throw new Error(_msg11);
+        case 34:
           if (!padding) {
-            _context5.next = 40;
+            _context5.next = 39;
             break;
           }
           if (!(Math.abs(padding) >= width / 2)) {
-            _context5.next = 38;
+            _context5.next = 37;
             break;
           }
           throw new Error('Padding must be less than width / 2');
-        case 38:
+        case 37:
           if (!(Math.abs(padding) >= height / 2)) {
-            _context5.next = 40;
+            _context5.next = 39;
             break;
           }
           throw new Error('Padding must be less than height / 2');
-        case 40:
+        case 39:
           // calculate zoom and center from bounds and image dimensions
           if (bounds !== null && (zoom === null || center === null)) {
             viewport = _geoViewport["default"].viewport(bounds,
@@ -846,12 +850,12 @@ var render = /*#__PURE__*/function () {
           }
           localMbtilesMatches = JSON.stringify(style).match(MBTILES_REGEXP);
           if (!(localMbtilesMatches && !tilePath)) {
-            _context5.next = 46;
+            _context5.next = 45;
             break;
           }
-          _msg11 = 'Style has local mbtiles file sources, but no tilePath is set';
-          throw new Error(_msg11);
-        case 46:
+          _msg12 = 'Style has local mbtiles file sources, but no tilePath is set';
+          throw new Error(_msg12);
+        case 45:
           if (localMbtilesMatches) {
             localMbtilesMatches.forEach(function (name) {
               var mbtileFilename = _path["default"].normalize(_path["default"].format({
@@ -860,23 +864,23 @@ var render = /*#__PURE__*/function () {
                 ext: '.mbtiles'
               }));
               if (!_fs["default"].existsSync(mbtileFilename)) {
-                var _msg12 = "Mbtiles file ".concat(_path["default"].format({
+                var _msg13 = "Mbtiles file ".concat(_path["default"].format({
                   name: name,
                   ext: '.mbtiles'
                 }), " in style file is not found in: ").concat(_path["default"].resolve(tilePath));
-                throw new Error(_msg12);
+                throw new Error(_msg13);
               }
             });
           }
           map = new _maplibreGlNative["default"].Map({
-            request: requestHandler || getDefaultRequestHandlers(tilePath, token),
+            request: requestHandler(tilePath, token),
             ratio: ratio
           });
           map.load(style);
-          _context5.next = 51;
+          _context5.next = 50;
           return loadImages(map, images);
-        case 51:
-          _context5.next = 53;
+        case 50:
+          _context5.next = 52;
           return renderMap(map, {
             zoom: zoom,
             center: center,
@@ -885,10 +889,10 @@ var render = /*#__PURE__*/function () {
             bearing: bearing,
             pitch: pitch
           });
-        case 53:
+        case 52:
           buffer = _context5.sent;
           return _context5.abrupt("return", toPNG(buffer, width, height, ratio));
-        case 55:
+        case 54:
         case "end":
           return _context5.stop();
       }
@@ -899,5 +903,5 @@ var render = /*#__PURE__*/function () {
   };
 }();
 exports.render = render;
-var _default2 = render;
-exports["default"] = _default2;
+var _default = render;
+exports["default"] = _default;
