@@ -12,6 +12,5 @@ export type RequestHandler = {
   [ResourceKind.SpriteImage]: RequestFn,
   [ResourceKind.SpriteJSON]: RequestFn,
   7: RequestFn, // remaining artifact after refactoring, probably only existed in mapbox and not maplibre
-  default: RequestFn;
 }
 

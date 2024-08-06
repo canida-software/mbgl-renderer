@@ -388,6 +388,7 @@ const getRemoteAssetPromise = (url) => {
  * @returns {import('./types/render').RequestHandler}
  */
 const getDefaultRequestHandler = (tilePath, token) => {
+    /** @type {import('./types/render').RequestHandler} */
     const handler = {
         [ResourceKind.Source]: (url, callback) => {
             if (isMBTilesURL(url)) {
@@ -412,32 +413,26 @@ const getDefaultRequestHandler = (tilePath, token) => {
         },
         [ResourceKind.Glyphs]: (url, callback) => {
             getRemoteAsset(
-                isMapboxURL(url) ? normalizeMapboxGlyphURL(url, token) : urlLib.parse(url),
+                isMapboxURL(url) ? normalizeMapboxGlyphURL(url, token) : new URL(url).href,
                 callback
             )
         },
         [ResourceKind.SpriteImage]: (url, callback) => {
             getRemoteAsset(
-                isMapboxURL(url) ? normalizeMapboxSpriteURL(url, token) : urlLib.parse(url),
+                isMapboxURL(url) ? normalizeMapboxSpriteURL(url, token) : new URL(url).href,
                 callback
             )
         },
         [ResourceKind.SpriteJSON]: (url, callback) => {
             getRemoteAsset(
-                isMapboxURL(url) ? normalizeMapboxSpriteURL(url, token) : urlLib.parse(url),
+                isMapboxURL(url) ? normalizeMapboxSpriteURL(url, token) : new URL(url).href,
                 callback
             )
         },
         7: (url, callback) => {
             // image source
             // probably an artifact from mapbox gl native and not part of maplibre gl native
-            getRemoteAsset(urlLib.parse(url), callback)
-        },
-        default: (url, callback) => {
-            // NOT HANDLED!
-            const msg = `error Request kind not handled: ${kind}`
-            logger.error(msg)
-            throw new Error(msg)
+            getRemoteAsset(new URL(url).href, callback)
         }
     }
 
@@ -711,10 +706,16 @@ export const render = async (style, width = 1024, height = 1024, options, reques
                 ...requestHandler
             }
 
-            /** @type {import('./types/render').RequestFn} */
-            const requestFn = handler[kind] || handler.default
+            /** @type {import('./types/render').RequestFn | undefined} */
+            const requestFn = handler[kind]
 
             try {
+                if (!requestFn) {
+                    // NOT HANDLED!
+                    const msg = `error Request kind not handled: ${kind}`
+                    logger.error(msg)
+                    throw new Error(msg)
+                }
                 requestFn(url, callback)
             } catch (err) {
                 const msg = `Error while making resource request to: ${url}\n${err}`
