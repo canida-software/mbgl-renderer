@@ -1,9 +1,11 @@
 {
   "extends": [
-    "prettier"
+    "prettier",
+    "plugin:jsdoc/recommended-typescript-flavor"
   ],
   "plugins": [
-    "prettier"
+    "prettier",
+    "jsdoc"
   ],
   "env": {
     "es6": true,
@@ -36,6 +38,11 @@
     "MAPBOX_TOKEN": false
   },
   "rules": {
+    "prettier/prettier": "error",
+    "jsdoc/require-returns": 0,
+    "jsdoc/require-returns-description": 0,
+    "jsdoc/require-param-description": 0,
+    "jsdoc/tag-lines": 0,
     "quotes": [
       2,
       "single",
