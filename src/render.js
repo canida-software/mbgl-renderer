@@ -380,92 +380,103 @@ const getRemoteAssetPromise = (url) => {
     })
 }
 
-const requestKinds = {
-    0: 'Unknown',
-    1: 'Style',
-    2: 'Source',
-    3: 'Tile',
-    4: 'Glyphs',
-    5: 'SpriteImage',
-    6: 'SpriteJSON',
-    7: 'ImageSource'
-}
-
 /**
  * requestHandler constructs a request handler for the map to load resources.
  *
  * @param {String} - path to tilesets (optional)
  * @param {String} - Mapbox GL token (optional; required for any Mapbox hosted resources)
  */
-const getDefaultRequestHandlers = (tilePath, token) => ({ url, kind }, callback) => {
-    const isMapbox = isMapboxURL(url)
-    if (isMapbox && !token) {
-        const msg = 'mapbox access token is required'
-        logger.error(msg)
-        return callback(new Error(msg))
-    }
-
-    const defaultRequestHandlers = {
-        Source: () => {
-            if (isMBTilesURL(url)) {
-                getLocalTileJSON(tilePath, url, callback)
-            } else if (isMapbox) {
-                // This seems to be due to a bug in how the mapbox tile
-                // JSON is handled within mapbox-gl-native
-                // since it returns fully resolved tiles!
-                getRemoteAsset(normalizeMapboxSourceURL(url, token), callback)
-            } else {
-                getRemoteAsset(url, callback)
-            }
-        },
-        Tile: () => {
-            if (isMBTilesURL(url)) {
-                getLocalTile(tilePath, url, callback)
-            } else if (isMapbox) {
-                getRemoteTile(normalizeMapboxTileURL(url, token), callback)
-            } else {
-                getRemoteTile(url, callback)
-            }
-        },
-        Glyphs: () => {
-            getRemoteAsset(
-                isMapbox ? normalizeMapboxGlyphURL(url, token) : urlLib.parse(url),
-                callback
-            )
-        },
-        SpriteImage: () => {
-            getRemoteAsset(
-                isMapbox ? normalizeMapboxSpriteURL(url, token) : urlLib.parse(url),
-                callback
-            )
-        },
-        SpriteJSON: () => {
-            getRemoteAsset(
-                isMapbox ? normalizeMapboxSpriteURL(url, token) : urlLib.parse(url),
-                callback
-            )
-        },
-        ImageSource: () => {
-            getRemoteAsset(urlLib.parse(url), callback)
-        },
-        default: () => {
-            const msg = `error Request kind not handled: ${kind}`
+const requestHandler =
+    (tilePath, token) =>
+    ({ url, kind }, callback) => {
+        const isMapbox = isMapboxURL(url)
+        if (isMapbox && !token) {
+            const msg = 'mapbox access token is required'
             logger.error(msg)
             return callback(new Error(msg))
         }
-    }
 
-    const requestKind = requestKinds[kind]
-    const handler = defaultRequestHandlers[requestKind] || defaultRequestHandlers.default
-
-    try {
-        handler()
-    } catch (err) {
-        const msg = `Error while making resource request to: ${url}\n${err}`
-        logger.error(msg)
-        return callback(msg)
+        try {
+            switch (kind) {
+                case 2: {
+                    // source
+                    if (isMBTilesURL(url)) {
+                        getLocalTileJSON(tilePath, url, callback)
+                    } else if (isMapbox) {
+                        getRemoteAsset(
+                            normalizeMapboxSourceURL(url, token),
+                            callback
+                        )
+                    } else {
+                        getRemoteAsset(url, callback)
+                    }
+                    break
+                }
+                case 3: {
+                    // tile
+                    if (isMBTilesURL(url)) {
+                        getLocalTile(tilePath, url, callback)
+                    } else if (isMapbox) {
+                        // This seems to be due to a bug in how the mapbox tile
+                        // JSON is handled within mapbox-gl-native
+                        // since it returns fully resolved tiles!
+                        getRemoteTile(
+                            normalizeMapboxTileURL(url, token),
+                            callback
+                        )
+                    } else {
+                        getRemoteTile(url, callback)
+                    }
+                    break
+                }
+                case 4: {
+                    // glyph
+                    getRemoteAsset(
+                        isMapbox
+                            ? normalizeMapboxGlyphURL(url, token)
+                            : urlLib.parse(url),
+                        callback
+                    )
+                    break
+                }
+                case 5: {
+                    // sprite image
+                    getRemoteAsset(
+                        isMapbox
+                            ? normalizeMapboxSpriteURL(url, token)
+                            : urlLib.parse(url),
+                        callback
+                    )
+                    break
+                }
+                case 6: {
+                    // sprite json
+                    getRemoteAsset(
+                        isMapbox
+                            ? normalizeMapboxSpriteURL(url, token)
+                            : urlLib.parse(url),
+                        callback
+                    )
+                    break
+                }
+                case 7: {
+                    // image source
+                    getRemoteAsset(urlLib.parse(url), callback)
+                    break
+                }
+                default: {
+                    // NOT HANDLED!
+                    const msg = `error Request kind not handled: ${kind}`
+                    logger.error(msg)
+                    throw new Error(msg)
+                }
+            }
+        } catch (err) {
+            const msg = `Error while making resource request to: ${url}\n${err}`
+            logger.error(msg)
+            return callback(msg)
+        }
     }
-}
 
 /**
  * Load an icon image from base64 data or a URL and add it to the map.
@@ -593,9 +604,8 @@ const toPNG = async (buffer, width, height, ratio) => {
  * width, height, bounds: [west, south, east, north], ratio, padding
  * @param {String} tilePath - path to directory containing local mbtiles files that are
  * referenced from the style.json as "mbtiles://<tileset>"
- * @param {Object} requestHandler - optional custom request handler
  */
-export const render = async (style, width = 1024, height = 1024, options, requestHandler = null) => {
+export const render = async (style, width = 1024, height = 1024, options) => {
     const {
         bounds = null,
         bearing = 0,
@@ -720,7 +730,7 @@ export const render = async (style, width = 1024, height = 1024, options, reques
     }
 
     const map = new maplibre.Map({
-        request: requestHandler || getDefaultRequestHandlers(tilePath, token),
+        request: requestHandler(tilePath, token),
         ratio,
     })
 
