@@ -5,7 +5,7 @@ import path from 'path'
 import sharp from 'sharp'
 import zlib from 'zlib'
 import geoViewport from '@mapbox/geo-viewport'
-import maplibre from '@maplibre/maplibre-gl-native'
+import maplibre, { ResourceKind } from '@maplibre/maplibre-gl-native'
 import MBTiles from '@mapbox/mbtiles'
 import pino from 'pino'
 import webRequest from 'request'
@@ -383,100 +383,66 @@ const getRemoteAssetPromise = (url) => {
 /**
  * requestHandler constructs a request handler for the map to load resources.
  *
- * @param {String} - path to tilesets (optional)
- * @param {String} - Mapbox GL token (optional; required for any Mapbox hosted resources)
+ * @param {String} tilePath - path to tilesets (optional)
+ * @param {String} token - Mapbox GL token (optional; required for any Mapbox hosted resources)
+ * @returns {import('./types/render').RequestHandler}
  */
-const requestHandler =
-    (tilePath, token) =>
-    ({ url, kind }, callback) => {
-        const isMapbox = isMapboxURL(url)
-        if (isMapbox && !token) {
-            const msg = 'mapbox access token is required'
-            logger.error(msg)
-            return callback(new Error(msg))
-        }
-
-        try {
-            switch (kind) {
-                case 2: {
-                    // source
-                    if (isMBTilesURL(url)) {
-                        getLocalTileJSON(tilePath, url, callback)
-                    } else if (isMapbox) {
-                        getRemoteAsset(
-                            normalizeMapboxSourceURL(url, token),
-                            callback
-                        )
-                    } else {
-                        getRemoteAsset(url, callback)
-                    }
-                    break
-                }
-                case 3: {
-                    // tile
-                    if (isMBTilesURL(url)) {
-                        getLocalTile(tilePath, url, callback)
-                    } else if (isMapbox) {
-                        // This seems to be due to a bug in how the mapbox tile
-                        // JSON is handled within mapbox-gl-native
-                        // since it returns fully resolved tiles!
-                        getRemoteTile(
-                            normalizeMapboxTileURL(url, token),
-                            callback
-                        )
-                    } else {
-                        getRemoteTile(url, callback)
-                    }
-                    break
-                }
-                case 4: {
-                    // glyph
-                    getRemoteAsset(
-                        isMapbox
-                            ? normalizeMapboxGlyphURL(url, token)
-                            : urlLib.parse(url),
-                        callback
-                    )
-                    break
-                }
-                case 5: {
-                    // sprite image
-                    getRemoteAsset(
-                        isMapbox
-                            ? normalizeMapboxSpriteURL(url, token)
-                            : urlLib.parse(url),
-                        callback
-                    )
-                    break
-                }
-                case 6: {
-                    // sprite json
-                    getRemoteAsset(
-                        isMapbox
-                            ? normalizeMapboxSpriteURL(url, token)
-                            : urlLib.parse(url),
-                        callback
-                    )
-                    break
-                }
-                case 7: {
-                    // image source
-                    getRemoteAsset(urlLib.parse(url), callback)
-                    break
-                }
-                default: {
-                    // NOT HANDLED!
-                    const msg = `error Request kind not handled: ${kind}`
-                    logger.error(msg)
-                    throw new Error(msg)
-                }
+const getDefaultRequestHandler = (tilePath, token) => {
+    const handler = {
+        [ResourceKind.Source]: (url, callback) => {
+            if (isMBTilesURL(url)) {
+                getLocalTileJSON(tilePath, url, callback)
+            } else if (isMapboxURL(url)) {
+                getRemoteAsset(normalizeMapboxSourceURL(url, token), callback)
+            } else {
+                getRemoteAsset(url, callback)
             }
-        } catch (err) {
-            const msg = `Error while making resource request to: ${url}\n${err}`
+        },
+        [ResourceKind.Tile]: (url, callback) => {
+            if (isMBTilesURL(url)) {
+                getLocalTile(tilePath, url, callback)
+            } else if (isMapboxURL(url)) {
+                // This seems to be due to a bug in how the mapbox tile
+                // JSON is handled within mapbox-gl-native
+                // since it returns fully resolved tiles!
+                getRemoteTile(normalizeMapboxTileURL(url, token), callback)
+            } else {
+                getRemoteTile(url, callback)
+            }
+        },
+        [ResourceKind.Glyphs]: (url, callback) => {
+            getRemoteAsset(
+                isMapboxURL(url) ? normalizeMapboxGlyphURL(url, token) : urlLib.parse(url),
+                callback
+            )
+        },
+        [ResourceKind.SpriteImage]: (url, callback) => {
+            getRemoteAsset(
+                isMapboxURL(url) ? normalizeMapboxSpriteURL(url, token) : urlLib.parse(url),
+                callback
+            )
+        },
+        [ResourceKind.SpriteJSON]: (url, callback) => {
+            getRemoteAsset(
+                isMapboxURL(url) ? normalizeMapboxSpriteURL(url, token) : urlLib.parse(url),
+                callback
+            )
+        },
+        7: (url, callback) => {
+            // image source
+            // probably an artifact from mapbox gl native and not part of maplibre gl native
+            getRemoteAsset(urlLib.parse(url), callback)
+        },
+        default: (url, callback) => {
+            // NOT HANDLED!
+            const msg = `error Request kind not handled: ${kind}`
             logger.error(msg)
-            return callback(msg)
+            throw new Error(msg)
         }
     }
+
+    return handler
+}
 
 /**
  * Load an icon image from base64 data or a URL and add it to the map.
@@ -600,12 +566,14 @@ const toPNG = async (buffer, width, height, ratio) => {
  * @param {Object} style - Mapbox GL style object
  * @param {number} width - width of output map (default: 1024)
  * @param {number} height - height of output map (default: 1024)
- * @param {Object} - configuration object containing style, zoom, center: [lng, lat],
+ * @param {Object} options - configuration object containing style, zoom, center: [lng, lat],
  * width, height, bounds: [west, south, east, north], ratio, padding
  * @param {String} tilePath - path to directory containing local mbtiles files that are
  * referenced from the style.json as "mbtiles://<tileset>"
+ * @param {import('./types/render').RequestHandler} requestHandler - Will be used during a
+ * Map.render call to request all necessary map resources (tiles, fonts...)
  */
-export const render = async (style, width = 1024, height = 1024, options) => {
+export const render = async (style, width = 1024, height = 1024, options, requestHandler = null) => {
     const {
         bounds = null,
         bearing = 0,
@@ -730,7 +698,30 @@ export const render = async (style, width = 1024, height = 1024, options) => {
     }
 
     const map = new maplibre.Map({
-        request: requestHandler(tilePath, token),
+        request: ({ url, kind }, callback) => {
+            const isMapbox = isMapboxURL(url)
+            if (isMapbox && !token) {
+                const msg = 'mapbox access token is required'
+                logger.error(msg)
+                return callback(new Error(msg))
+            }
+
+            const handler = {
+                ...getDefaultRequestHandler(tilePath, token),
+                ...requestHandler
+            }
+
+            /** @type {import('./types/render').RequestFn} */
+            const requestFn = handler[kind] || handler.default
+
+            try {
+                requestFn(url, callback)
+            } catch (err) {
+                const msg = `Error while making resource request to: ${url}\n${err}`
+                logger.error(msg)
+                return callback(new Error(msg))
+            }
+        },
         ratio,
     })
 
