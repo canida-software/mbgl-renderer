@@ -395,9 +395,9 @@ const getRemoteAssetPromise = (url) => {
 /**
  * RequestHandler constructs a request handler for the map to load resources.
  *
- * @param {string} tilePath - Path to tilesets (optional)
- * @param {string} token - Mapbox GL token (optional; required for any Mapbox
- *   hosted resources)
+ * @param {string | null} tilePath - Path to tilesets (optional)
+ * @param {string | null} token - Mapbox GL token (optional; required for any
+ *   Mapbox hosted resources)
  * @returns {RequestHandler}
  */
 const getDefaultRequestHandler = (tilePath, token) => {
@@ -405,8 +405,16 @@ const getDefaultRequestHandler = (tilePath, token) => {
     const handler = {
         [ResourceKind.Source]: (url, callback) => {
             if (isMBTilesURL(url)) {
+                if (!tilePath) {
+                    const msg = `Requesting local tiles "${url}" but parameter tilePath is missing.`
+                    return callback(new Error(msg))
+                }
                 getLocalTileJSON(tilePath, url, callback)
             } else if (isMapboxURL(url)) {
+                if (!token) {
+                    const msg = `Requesting MapBox tiles "${url}" but parameter token is missing.`
+                    return callback(new Error(msg))
+                }
                 getRemoteAsset(normalizeMapboxSourceURL(url, token), callback)
             } else {
                 getRemoteAsset(url, callback)
@@ -414,35 +422,55 @@ const getDefaultRequestHandler = (tilePath, token) => {
         },
         [ResourceKind.Tile]: (url, callback) => {
             if (isMBTilesURL(url)) {
+                if (!tilePath) {
+                    const msg = `Requesting local tile "${url}" but parameter tilePath is missing.`
+                    return callback(new Error(msg))
+                }
                 getLocalTile(tilePath, url, callback)
             } else if (isMapboxURL(url)) {
                 // This seems to be due to a bug in how the mapbox tile
                 // JSON is handled within mapbox-gl-native
                 // since it returns fully resolved tiles!
+                if (!token) {
+                    const msg = `Requesting MapBox tiles "${url}" but parameter token is missing.`
+                    return callback(new Error(msg))
+                }
                 getRemoteTile(normalizeMapboxTileURL(url, token), callback)
             } else {
                 getRemoteTile(url, callback)
             }
         },
         [ResourceKind.Glyphs]: (url, callback) => {
+            if (isMapboxURL(url) && !token) {
+                const msg = `Requesting MapBox tiles "${url}" but parameter token is missing.`
+                return callback(new Error(msg))
+            }
             getRemoteAsset(
-                isMapboxURL(url)
+                isMapboxURL(url) && token
                     ? normalizeMapboxGlyphURL(url, token)
                     : new URL(url).href,
                 callback
             )
         },
         [ResourceKind.SpriteImage]: (url, callback) => {
+            if (isMapboxURL(url) && !token) {
+                const msg = `Requesting MapBox tiles "${url}" but parameter token is missing.`
+                return callback(new Error(msg))
+            }
             getRemoteAsset(
-                isMapboxURL(url)
+                isMapboxURL(url) && token
                     ? normalizeMapboxSpriteURL(url, token)
                     : new URL(url).href,
                 callback
             )
         },
         [ResourceKind.SpriteJSON]: (url, callback) => {
+            if (isMapboxURL(url) && !token) {
+                const msg = `Requesting MapBox tiles "${url}" but parameter token is missing.`
+                return callback(new Error(msg))
+            }
             getRemoteAsset(
-                isMapboxURL(url)
+                isMapboxURL(url) && token
                     ? normalizeMapboxSpriteURL(url, token)
                     : new URL(url).href,
                 callback
