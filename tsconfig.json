@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "checkJs": true, // Enables type checking in JavaScript files
+    "allowJs": true, // Allows JavaScript files to be compiled
+    "noImplicitAny": false, // Prevent errors for implicit any types
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ],
+    "resolveJsonModule": true,
+  },
+  "include": [
+    "src/**/*"
+  ]
+}
