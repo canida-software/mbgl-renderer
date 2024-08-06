@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
+    "target": "ES2017",
+    "module": "ESNext",
     "strict": false,
     "strictNullChecks": true,
     "esModuleInterop": true,
@@ -14,7 +14,12 @@
       "./node_modules/@types",
       "./src/types"
     ],
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist",
+    "declarationMap": true
   },
   "include": [
     "src/**/*"
