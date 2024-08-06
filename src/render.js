@@ -565,10 +565,10 @@ const toPNG = async (buffer, width, height, ratio) => {
  * width, height, bounds: [west, south, east, north], ratio, padding
  * @param {String} tilePath - path to directory containing local mbtiles files that are
  * referenced from the style.json as "mbtiles://<tileset>"
- * @param {import('./types/render').RequestHandler} requestHandler - Will be used during a
+ * @param {import('./types/render').RequestHandler} [requestHandler] - (Optional) Will be used during a
  * Map.render call to request all necessary map resources (tiles, fonts...)
  */
-export const render = async (style, width = 1024, height = 1024, options, requestHandler = null) => {
+export const render = async (style, width = 1024, height = 1024, options, requestHandler) => {
     const {
         bounds = null,
         bearing = 0,
