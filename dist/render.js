@@ -81,8 +81,10 @@ var isMBTilesURL = function isMBTilesURL(url) {
 
 /**
  * Normalize a Mapbox source URL to a full URL
- * @param {string} url - url to mapbox source in style json, e.g. "url": "mapbox://mapbox.mapbox-streets-v7"
- * @param {string} token - mapbox public token
+ *
+ * @param {string} url - Url to mapbox source in style json, e.g. "url":
+ *   "mapbox://mapbox.mapbox-streets-v7"
+ * @param {string} token - Mapbox public token
  */
 var normalizeMapboxSourceURL = function normalizeMapboxSourceURL(url, token) {
   try {
@@ -103,9 +105,10 @@ var normalizeMapboxSourceURL = function normalizeMapboxSourceURL(url, token) {
 
 /**
  * Normalize a Mapbox tile URL to a full URL
- * @param {string} url - url to mapbox tile in style json or resolved from source
- * e.g. mapbox://tiles/mapbox.mapbox-streets-v7/1/0/1.vector.pbf
- * @param {string} token - mapbox public token
+ *
+ * @param {string} url - Url to mapbox tile in style json or resolved from
+ *   source e.g. mapbox://tiles/mapbox.mapbox-streets-v7/1/0/1.vector.pbf
+ * @param {string} token - Mapbox public token
  */
 var normalizeMapboxTileURL = function normalizeMapboxTileURL(url, token) {
   try {
@@ -125,8 +128,10 @@ var normalizeMapboxTileURL = function normalizeMapboxTileURL(url, token) {
 
 /**
  * Normalize a Mapbox style URL to a full URL
- * @param {string} url - url to mapbox source in style json, e.g. "url": "mapbox://styles/mapbox/streets-v9"
- * @param {string} token - mapbox public token
+ *
+ * @param {string} url - Url to mapbox source in style json, e.g. "url":
+ *   "mapbox://styles/mapbox/streets-v9"
+ * @param {string} token - Mapbox public token
  */
 var normalizeMapboxStyleURL = function normalizeMapboxStyleURL(url, token) {
   try {
@@ -148,10 +153,13 @@ var normalizeMapboxStyleURL = function normalizeMapboxStyleURL(url, token) {
 
 /**
  * Normalize a Mapbox sprite URL to a full URL
- * @param {string} url - url to mapbox sprite, e.g. "url": "mapbox://sprites/mapbox/streets-v9.png"
- * @param {string} token - mapbox public token
  *
- * Returns {string} - url, e.g., "https://api.mapbox.com/styles/v1/mapbox/streets-v9/sprite.png?access_token=<token>"
+ * @param {string} url - Url to mapbox sprite, e.g. "url":
+ *   "mapbox://sprites/mapbox/streets-v9.png"
+ * @param {string} token - Mapbox public token
+ *
+ *   Returns {string} - url, e.g.,
+ *   "https://api.mapbox.com/styles/v1/mapbox/streets-v9/sprite.png?access_token=<token>"
  */
 exports.normalizeMapboxStyleURL = normalizeMapboxStyleURL;
 var normalizeMapboxSpriteURL = function normalizeMapboxSpriteURL(url, token) {
@@ -177,10 +185,13 @@ var normalizeMapboxSpriteURL = function normalizeMapboxSpriteURL(url, token) {
 
 /**
  * Normalize a Mapbox glyph URL to a full URL
- * @param {string} url - url to mapbox sprite, e.g. "url": "mapbox://sprites/mapbox/streets-v9.png"
- * @param {string} token - mapbox public token
  *
- * Returns {string} - url, e.g., "https://api.mapbox.com/styles/v1/mapbox/streets-v9/sprite.png?access_token=<token>"
+ * @param {string} url - Url to mapbox sprite, e.g. "url":
+ *   "mapbox://sprites/mapbox/streets-v9.png"
+ * @param {string} token - Mapbox public token
+ *
+ *   Returns {string} - url, e.g.,
+ *   "https://api.mapbox.com/styles/v1/mapbox/streets-v9/sprite.png?access_token=<token>"
  */
 exports.normalizeMapboxSpriteURL = normalizeMapboxSpriteURL;
 var normalizeMapboxGlyphURL = function normalizeMapboxGlyphURL(url, token) {
@@ -202,7 +213,7 @@ var normalizeMapboxGlyphURL = function normalizeMapboxGlyphURL(url, token) {
 /**
  * Very simplistic function that splits out mbtiles service name from the URL
  *
- * @param {String} url - URL to resolve
+ * @param {string} url - URL to resolve
  */
 exports.normalizeMapboxGlyphURL = normalizeMapboxGlyphURL;
 var resolveNamefromURL = function resolveNamefromURL(url) {
@@ -210,11 +221,11 @@ var resolveNamefromURL = function resolveNamefromURL(url) {
 };
 
 /**
- * Resolve a URL of a local mbtiles file to a file path
- * Expected to follow this format "mbtiles://<service_name>/*"
+ * Resolve a URL of a local mbtiles file to a file path Expected to follow this
+ * format "mbtiles://<service_name>/*"
  *
- * @param {String} tilePath - path containing mbtiles files
- * @param {String} url - url of a data source in style.json file.
+ * @param {string} tilePath - Path containing mbtiles files
+ * @param {string} url - Url of a data source in style.json file.
  */
 var resolveMBTilesURL = function resolveMBTilesURL(tilePath, url) {
   return _path["default"].format({
@@ -225,11 +236,12 @@ var resolveMBTilesURL = function resolveMBTilesURL(tilePath, url) {
 };
 
 /**
- * Given a URL to a local mbtiles file, get the TileJSON for that to load correct tiles.
+ * Given a URL to a local mbtiles file, get the TileJSON for that to load
+ * correct tiles.
  *
- * @param {String} tilePath - path containing mbtiles files.
- * @param {String} url - url of a data source in style.json file.
- * @param {function} callback - function to call with (err, {data}).
+ * @param {string} tilePath - Path containing mbtiles files.
+ * @param {string} url - Url of a data source in style.json file.
+ * @param {Function} callback - Function to call with (err, {data}).
  */
 var getLocalTileJSON = function getLocalTileJSON(tilePath, url, callback) {
   var mbtilesFilename = resolveMBTilesURL(tilePath, url);
@@ -270,9 +282,9 @@ var getLocalTileJSON = function getLocalTileJSON(tilePath, url, callback) {
 /**
  * Fetch a tile from a local mbtiles file.
  *
- * @param {String} tilePath - path containing mbtiles files.
- * @param {String} url - url of a data source in style.json file.
- * @param {function} callback - function to call with (err, {data}).
+ * @param {string} tilePath - Path containing mbtiles files.
+ * @param {string} url - Url of a data source in style.json file.
+ * @param {Function} callback - Function to call with (err, {data}).
  */
 var getLocalTile = function getLocalTile(tilePath, url, callback) {
   var matches = url.match(TILE_REGEXP);
@@ -312,12 +324,12 @@ var getLocalTile = function getLocalTile(tilePath, url, callback) {
 };
 
 /**
- * Fetch a remotely hosted tile.
- * Empty or missing tiles return null data to the callback function, which
- * result in those tiles not rendering but no errors being raised.
+ * Fetch a remotely hosted tile. Empty or missing tiles return null data to the
+ * callback function, which result in those tiles not rendering but no errors
+ * being raised.
  *
- * @param {String} url - URL of the tile
- * @param {function} callback - callback to call with (err, {data})
+ * @param {string} url - URL of the tile
+ * @param {Function} callback - Callback to call with (err, {data})
  */
 var getRemoteTile = function getRemoteTile(url, callback) {
   (0, _request["default"])({
@@ -360,12 +372,11 @@ var getRemoteTile = function getRemoteTile(url, callback) {
 };
 
 /**
- * Fetch a remotely hosted asset: glyph, sprite, etc
- * Anything other than a HTTP 200 response results in an exception.
+ * Fetch a remotely hosted asset: glyph, sprite, etc Anything other than a HTTP
+ * 200 response results in an exception.
  *
- *
- * @param {String} url - URL of the asset
- * @param {function} callback - callback to call with (err, {data})
+ * @param {string} url - URL of the asset
+ * @param {Function} callback - Callback to call with (err, {data})
  */
 var getRemoteAsset = function getRemoteAsset(url, callback) {
   (0, _request["default"])({
@@ -394,11 +405,11 @@ var getRemoteAsset = function getRemoteAsset(url, callback) {
 };
 
 /**
- * Fetch a remotely hosted asset: glyph, sprite, etc
- * Anything other than a HTTP 200 response results in an exception.
+ * Fetch a remotely hosted asset: glyph, sprite, etc Anything other than a HTTP
+ * 200 response results in an exception.
  *
- * @param {String} url - URL of the asset
- * returns a Promise
+ * @param {string} url - URL of the asset
+ * @returns {Promise} Returns a Promise
  */
 var getRemoteAssetPromise = function getRemoteAssetPromise(url) {
   return new Promise(function (resolve, reject) {
@@ -412,40 +423,69 @@ var getRemoteAssetPromise = function getRemoteAssetPromise(url) {
 };
 
 /**
- * requestHandler constructs a request handler for the map to load resources.
+ * RequestHandler constructs a request handler for the map to load resources.
  *
- * @param {String} tilePath - path to tilesets (optional)
- * @param {String} token - Mapbox GL token (optional; required for any Mapbox hosted resources)
- * @returns {import('./types/render').RequestHandler}
+ * @param {string | null} tilePath - Path to tilesets (optional)
+ * @param {string | null} token - Mapbox GL token (optional; required for any
+ *   Mapbox hosted resources)
+ * @returns {RequestHandler}
  */
 var getDefaultRequestHandler = function getDefaultRequestHandler(tilePath, token) {
   var _handler;
-  /** @type {import('./types/render').RequestHandler} */
+  /** @type {RequestHandler} */
   var handler = (_handler = {}, (0, _defineProperty2["default"])(_handler, _maplibreGlNative.ResourceKind.Source, function (url, callback) {
     if (isMBTilesURL(url)) {
+      if (!tilePath) {
+        var msg = "Requesting local tiles \"".concat(url, "\" but parameter tilePath is missing.");
+        return callback(new Error(msg));
+      }
       getLocalTileJSON(tilePath, url, callback);
     } else if (isMapboxURL(url)) {
+      if (!token) {
+        var _msg = "Requesting MapBox tiles \"".concat(url, "\" but parameter token is missing.");
+        return callback(new Error(_msg));
+      }
       getRemoteAsset(normalizeMapboxSourceURL(url, token), callback);
     } else {
       getRemoteAsset(url, callback);
     }
   }), (0, _defineProperty2["default"])(_handler, _maplibreGlNative.ResourceKind.Tile, function (url, callback) {
     if (isMBTilesURL(url)) {
+      if (!tilePath) {
+        var msg = "Requesting local tile \"".concat(url, "\" but parameter tilePath is missing.");
+        return callback(new Error(msg));
+      }
       getLocalTile(tilePath, url, callback);
     } else if (isMapboxURL(url)) {
       // This seems to be due to a bug in how the mapbox tile
       // JSON is handled within mapbox-gl-native
       // since it returns fully resolved tiles!
+      if (!token) {
+        var _msg2 = "Requesting MapBox tiles \"".concat(url, "\" but parameter token is missing.");
+        return callback(new Error(_msg2));
+      }
       getRemoteTile(normalizeMapboxTileURL(url, token), callback);
     } else {
       getRemoteTile(url, callback);
     }
   }), (0, _defineProperty2["default"])(_handler, _maplibreGlNative.ResourceKind.Glyphs, function (url, callback) {
-    getRemoteAsset(isMapboxURL(url) ? normalizeMapboxGlyphURL(url, token) : new URL(url).href, callback);
+    if (isMapboxURL(url) && !token) {
+      var msg = "Requesting MapBox tiles \"".concat(url, "\" but parameter token is missing.");
+      return callback(new Error(msg));
+    }
+    getRemoteAsset(isMapboxURL(url) && token ? normalizeMapboxGlyphURL(url, token) : new URL(url).href, callback);
   }), (0, _defineProperty2["default"])(_handler, _maplibreGlNative.ResourceKind.SpriteImage, function (url, callback) {
-    getRemoteAsset(isMapboxURL(url) ? normalizeMapboxSpriteURL(url, token) : new URL(url).href, callback);
+    if (isMapboxURL(url) && !token) {
+      var msg = "Requesting MapBox tiles \"".concat(url, "\" but parameter token is missing.");
+      return callback(new Error(msg));
+    }
+    getRemoteAsset(isMapboxURL(url) && token ? normalizeMapboxSpriteURL(url, token) : new URL(url).href, callback);
   }), (0, _defineProperty2["default"])(_handler, _maplibreGlNative.ResourceKind.SpriteJSON, function (url, callback) {
-    getRemoteAsset(isMapboxURL(url) ? normalizeMapboxSpriteURL(url, token) : new URL(url).href, callback);
+    if (isMapboxURL(url) && !token) {
+      var msg = "Requesting MapBox tiles \"".concat(url, "\" but parameter token is missing.");
+      return callback(new Error(msg));
+    }
+    getRemoteAsset(isMapboxURL(url) && token ? normalizeMapboxSpriteURL(url, token) : new URL(url).href, callback);
   }), (0, _defineProperty2["default"])(_handler, 7, function _(url, callback) {
     // image source
     // probably an artifact from mapbox gl native and not part of maplibre gl native
@@ -457,13 +497,17 @@ var getDefaultRequestHandler = function getDefaultRequestHandler(tilePath, token
 /**
  * Load an icon image from base64 data or a URL and add it to the map.
  *
- * @param {Object} map - Mapbox GL map object
- * @param {String} id - id of image to add
- * @param {Object} options - options object with {url, pixelRatio, sdf}.  url is required
+ * @param {object} map - Mapbox GL map object
+ * @param {string} id - Id of image to add
+ * @param {object} options - Options object with {url, pixelRatio, sdf}. url is
+ *   required
+ * @param {string} options.url
+ * @param {number} options.pixelRatio
+ * @param {boolean} options.sdf
  */
 var loadImage = /*#__PURE__*/function () {
   var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(map, id, _ref) {
-    var url, _ref$pixelRatio, pixelRatio, _ref$sdf, sdf, msg, imgBuffer, _img, img, metadata, data, _msg;
+    var url, _ref$pixelRatio, pixelRatio, _ref$sdf, sdf, msg, imgBuffer, _img, img, metadata, data, _msg3;
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
@@ -514,9 +558,9 @@ var loadImage = /*#__PURE__*/function () {
         case 26:
           _context.prev = 26;
           _context.t0 = _context["catch"](5);
-          _msg = "Error loading icon image: ".concat(id, "\n").concat(_context.t0);
-          logger.error(_msg);
-          throw new Error(_msg);
+          _msg3 = "Error loading icon image: ".concat(id, "\n").concat(_context.t0);
+          logger.error(_msg3);
+          throw new Error(_msg3);
         case 31:
         case "end":
           return _context.stop();
@@ -530,8 +574,9 @@ var loadImage = /*#__PURE__*/function () {
 
 /**
  * Load all icon images to the map.
- * @param {Object} map - Mapbox GL map object
- * @param {Object} images - object with {id: {url, ...other image properties}}
+ *
+ * @param {object} map - Mapbox GL map object
+ * @param {object} images - Object with {id: {url, ...other image properties}}
  */
 var loadImages = /*#__PURE__*/function () {
   var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(map, images) {
@@ -576,9 +621,8 @@ var loadImages = /*#__PURE__*/function () {
 /**
  * Render the map, returning a Promise.
  *
- * @param {Object} map - Mapbox GL map object
- * @param {Object} options - Mapbox GL map options
- * @returns
+ * @param {object} map - Mapbox GL map object
+ * @param {object} options - Mapbox GL map options
  */
 var renderMap = function renderMap(map, options) {
   return new Promise(function (resolve, reject) {
@@ -593,11 +637,11 @@ var renderMap = function renderMap(map, options) {
 
 /**
  * Convert premultiplied image buffer from Mapbox GL to RGBA PNG format.
- * @param {Uint8Array} buffer - image data buffer
- * @param {Number} width - image width
- * @param {Number} height - image height
- * @param {Number} ratio - image pixel ratio
- * @returns
+ *
+ * @param {Uint8Array} buffer - Image data buffer
+ * @param {number} width - Image width
+ * @param {number} height - Image height
+ * @param {number} ratio - Image pixel ratio
  */
 var toPNG = /*#__PURE__*/function () {
   var _ref5 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4(buffer, width, height, ratio) {
@@ -643,21 +687,31 @@ var toPNG = /*#__PURE__*/function () {
 }();
 
 /**
- * Asynchronously render a map using Mapbox GL, based on layers specified in style.
- * Returns PNG image data (via async / Promise).
+ * Asynchronously render a map using Mapbox GL, based on layers specified in
+ * style. Returns PNG image data (via async / Promise).
  *
- * If zoom and center are not provided, bounds must be provided
- * and will be used to calculate center and zoom based on image dimensions.
+ * If zoom and center are not provided, bounds must be provided and will be used
+ * to calculate center and zoom based on image dimensions.
  *
- * @param {Object} style - Mapbox GL style object
- * @param {number} width - width of output map (default: 1024)
- * @param {number} height - height of output map (default: 1024)
- * @param {Object} options - configuration object containing style, zoom, center: [lng, lat],
- * width, height, bounds: [west, south, east, north], ratio, padding
- * @param {String} tilePath - path to directory containing local mbtiles files that are
- * referenced from the style.json as "mbtiles://<tileset>"
- * @param {import('./types/render').RequestHandler} requestHandler - Will be used during a
- * Map.render call to request all necessary map resources (tiles, fonts...)
+ * @param {object} style - Mapbox GL style object
+ * @param {number} [width] - Width of output map (default: 1024)
+ * @param {number} [height] - Height of output map (default: 1024)
+ * @param {object} options - Configuration object
+ * @param {number[]} [options.center] - Center coordinates [lng, lat]
+ * @param {number} [options.zoom] - Zoom level
+ * @param {number[]} [options.bounds] - Bounds [west, south, east, north]
+ * @param {number} [options.bearing] - Bearing angle (0-360)
+ * @param {number} [options.pitch] - Pitch angle (0-60)
+ * @param {string} [options.token] - Mapbox access token
+ * @param {number} [options.ratio] - Pixel ratio
+ * @param {number} [options.padding] - Padding in pixels
+ * @param {object} [options.images] - Images object
+ * @param {string} [options.tilePath] - Path to directory containing local
+ *   mbtiles files
+ * @param {RequestHandler} [requestHandler] - (Optional) Will be used during a
+ *   Map.render call to request all necessary map resources (tiles, fonts...)
+ * @returns {Promise<Buffer>} - PNG image data
+ * @throws {Error} - Throws error if required parameters are missing or invalid
  */
 var render = /*#__PURE__*/function () {
   var _ref6 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5(style) {
@@ -686,17 +740,17 @@ var render = /*#__PURE__*/function () {
       _options$tilePath,
       tilePath,
       msg,
-      _msg2,
-      _msg3,
       _msg4,
       _msg5,
       _msg6,
       _msg7,
       _msg8,
       _msg9,
+      _msg10,
+      _msg11,
       viewport,
       localMbtilesMatches,
-      _msg10,
+      _msg12,
       map,
       buffer,
       _args5 = arguments;
@@ -705,8 +759,9 @@ var render = /*#__PURE__*/function () {
         case 0:
           width = _args5.length > 1 && _args5[1] !== undefined ? _args5[1] : 1024;
           height = _args5.length > 2 && _args5[2] !== undefined ? _args5[2] : 1024;
+          // @ts-ignore because switching order may break stuff
           options = _args5.length > 3 ? _args5[3] : undefined;
-          requestHandler = _args5.length > 4 && _args5[4] !== undefined ? _args5[4] : null;
+          requestHandler = _args5.length > 4 ? _args5[4] : undefined;
           _options$bounds = options.bounds, bounds = _options$bounds === void 0 ? null : _options$bounds, _options$bearing = options.bearing, bearing = _options$bearing === void 0 ? 0 : _options$bearing, _options$pitch = options.pitch, pitch = _options$pitch === void 0 ? 0 : _options$pitch, _options$token = options.token, token = _options$token === void 0 ? null : _options$token, _options$ratio = options.ratio, ratio = _options$ratio === void 0 ? 1 : _options$ratio, _options$padding = options.padding, padding = _options$padding === void 0 ? 0 : _options$padding, _options$images = options.images, images = _options$images === void 0 ? null : _options$images;
           _options$center = options.center, center = _options$center === void 0 ? null : _options$center, _options$zoom = options.zoom, zoom = _options$zoom === void 0 ? null : _options$zoom, _options$tilePath = options.tilePath, tilePath = _options$tilePath === void 0 ? null : _options$tilePath;
           if (style) {
@@ -720,8 +775,8 @@ var render = /*#__PURE__*/function () {
             _context5.next = 12;
             break;
           }
-          _msg2 = 'width and height are required parameters and must be non-zero';
-          throw new Error(_msg2);
+          _msg4 = 'width and height are required parameters and must be non-zero';
+          throw new Error(_msg4);
         case 12:
           if (!(center !== null)) {
             _context5.next = 22;
@@ -731,43 +786,43 @@ var render = /*#__PURE__*/function () {
             _context5.next = 16;
             break;
           }
-          _msg3 = "Center must be longitude,latitude.  Invalid value found: ".concat((0, _toConsumableArray2["default"])(center));
-          throw new Error(_msg3);
+          _msg5 = "Center must be longitude,latitude.  Invalid value found: ".concat((0, _toConsumableArray2["default"])(center));
+          throw new Error(_msg5);
         case 16:
           if (!(Math.abs(center[0]) > 180)) {
             _context5.next = 19;
             break;
           }
-          _msg4 = "Center longitude is outside world bounds (-180 to 180 deg): ".concat(center[0]);
-          throw new Error(_msg4);
+          _msg6 = "Center longitude is outside world bounds (-180 to 180 deg): ".concat(center[0]);
+          throw new Error(_msg6);
         case 19:
           if (!(Math.abs(center[1]) > 90)) {
             _context5.next = 22;
             break;
           }
-          _msg5 = "Center latitude is outside world bounds (-90 to 90 deg): ".concat(center[1]);
-          throw new Error(_msg5);
+          _msg7 = "Center latitude is outside world bounds (-90 to 90 deg): ".concat(center[1]);
+          throw new Error(_msg7);
         case 22:
           if (!(zoom !== null && (zoom < 0 || zoom > 22))) {
             _context5.next = 25;
             break;
           }
-          _msg6 = "Zoom level is outside supported range (0-22): ".concat(zoom);
-          throw new Error(_msg6);
+          _msg8 = "Zoom level is outside supported range (0-22): ".concat(zoom);
+          throw new Error(_msg8);
         case 25:
           if (!(bearing !== null && (bearing < 0 || bearing > 360))) {
             _context5.next = 28;
             break;
           }
-          _msg7 = "bearing is outside supported range (0-360): ".concat(bearing);
-          throw new Error(_msg7);
+          _msg9 = "bearing is outside supported range (0-360): ".concat(bearing);
+          throw new Error(_msg9);
         case 28:
           if (!(pitch !== null && (pitch < 0 || pitch > 60))) {
             _context5.next = 31;
             break;
           }
-          _msg8 = "pitch is outside supported range (0-60): ".concat(pitch);
-          throw new Error(_msg8);
+          _msg10 = "pitch is outside supported range (0-60): ".concat(pitch);
+          throw new Error(_msg10);
         case 31:
           if (!(bounds !== null)) {
             _context5.next = 40;
@@ -777,8 +832,8 @@ var render = /*#__PURE__*/function () {
             _context5.next = 35;
             break;
           }
-          _msg9 = "Bounds must be west,south,east,north.  Invalid value found: ".concat((0, _toConsumableArray2["default"])(bounds));
-          throw new Error(_msg9);
+          _msg11 = "Bounds must be west,south,east,north.  Invalid value found: ".concat((0, _toConsumableArray2["default"])(bounds));
+          throw new Error(_msg11);
         case 35:
           if (!padding) {
             _context5.next = 40;
@@ -817,10 +872,10 @@ var render = /*#__PURE__*/function () {
             _context5.next = 46;
             break;
           }
-          _msg10 = 'Style has local mbtiles file sources, but no tilePath is set';
-          throw new Error(_msg10);
+          _msg12 = 'Style has local mbtiles file sources, but no tilePath is set';
+          throw new Error(_msg12);
         case 46:
-          if (localMbtilesMatches) {
+          if (localMbtilesMatches && tilePath) {
             localMbtilesMatches.forEach(function (name) {
               var mbtileFilename = _path["default"].normalize(_path["default"].format({
                 dir: tilePath,
@@ -828,11 +883,11 @@ var render = /*#__PURE__*/function () {
                 ext: '.mbtiles'
               }));
               if (!_fs["default"].existsSync(mbtileFilename)) {
-                var _msg11 = "Mbtiles file ".concat(_path["default"].format({
+                var _msg13 = "Mbtiles file ".concat(_path["default"].format({
                   name: name,
                   ext: '.mbtiles'
                 }), " in style file is not found in: ").concat(_path["default"].resolve(tilePath));
-                throw new Error(_msg11);
+                throw new Error(_msg13);
               }
             });
           }
@@ -842,26 +897,26 @@ var render = /*#__PURE__*/function () {
                 kind = _ref7.kind;
               var isMapbox = isMapboxURL(url);
               if (isMapbox && !token) {
-                var _msg12 = 'mapbox access token is required';
-                logger.error(_msg12);
-                return callback(new Error(_msg12));
+                var _msg14 = 'mapbox access token is required';
+                logger.error(_msg14);
+                return callback(new Error(_msg14));
               }
               var handler = _objectSpread(_objectSpread({}, getDefaultRequestHandler(tilePath, token)), requestHandler);
 
-              /** @type {import('./types/render').RequestFn | undefined} */
+              /** @type {RequestFn | undefined} */
               var requestFn = handler[kind];
               try {
                 if (!requestFn) {
                   // NOT HANDLED!
-                  var _msg13 = "error Request kind not handled: ".concat(kind);
-                  logger.error(_msg13);
-                  throw new Error(_msg13);
+                  var _msg15 = "error Request kind not handled: ".concat(kind);
+                  logger.error(_msg15);
+                  throw new Error(_msg15);
                 }
                 requestFn(url, callback);
               } catch (err) {
-                var _msg14 = "Error while making resource request to: ".concat(url, "\n").concat(err);
-                logger.error(_msg14);
-                return callback(new Error(_msg14));
+                var _msg16 = "Error while making resource request to: ".concat(url, "\n").concat(err);
+                logger.error(_msg16);
+                return callback(new Error(_msg16));
               }
             },
             ratio: ratio
