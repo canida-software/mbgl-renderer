@@ -1,3 +1,4 @@
+/** @import {RequestHandler, RequestFn} from './types/render' */
 /* eslint-disable no-new */
 import fs from 'fs'
 import path from 'path'
@@ -56,8 +57,10 @@ const isMBTilesURL = (url) => url.startsWith('mbtiles://')
 
 /**
  * Normalize a Mapbox source URL to a full URL
- * @param {string} url - url to mapbox source in style json, e.g. "url": "mapbox://mapbox.mapbox-streets-v7"
- * @param {string} token - mapbox public token
+ *
+ * @param {string} url - Url to mapbox source in style json, e.g. "url":
+ *   "mapbox://mapbox.mapbox-streets-v7"
+ * @param {string} token - Mapbox public token
  */
 const normalizeMapboxSourceURL = (url, token) => {
     try {
@@ -78,9 +81,10 @@ const normalizeMapboxSourceURL = (url, token) => {
 
 /**
  * Normalize a Mapbox tile URL to a full URL
- * @param {string} url - url to mapbox tile in style json or resolved from source
- * e.g. mapbox://tiles/mapbox.mapbox-streets-v7/1/0/1.vector.pbf
- * @param {string} token - mapbox public token
+ *
+ * @param {string} url - Url to mapbox tile in style json or resolved from
+ *   source e.g. mapbox://tiles/mapbox.mapbox-streets-v7/1/0/1.vector.pbf
+ * @param {string} token - Mapbox public token
  */
 const normalizeMapboxTileURL = (url, token) => {
     try {
@@ -100,8 +104,10 @@ const normalizeMapboxTileURL = (url, token) => {
 
 /**
  * Normalize a Mapbox style URL to a full URL
- * @param {string} url - url to mapbox source in style json, e.g. "url": "mapbox://styles/mapbox/streets-v9"
- * @param {string} token - mapbox public token
+ *
+ * @param {string} url - Url to mapbox source in style json, e.g. "url":
+ *   "mapbox://styles/mapbox/streets-v9"
+ * @param {string} token - Mapbox public token
  */
 export const normalizeMapboxStyleURL = (url, token) => {
     try {
@@ -123,10 +129,13 @@ export const normalizeMapboxStyleURL = (url, token) => {
 
 /**
  * Normalize a Mapbox sprite URL to a full URL
- * @param {string} url - url to mapbox sprite, e.g. "url": "mapbox://sprites/mapbox/streets-v9.png"
- * @param {string} token - mapbox public token
  *
- * Returns {string} - url, e.g., "https://api.mapbox.com/styles/v1/mapbox/streets-v9/sprite.png?access_token=<token>"
+ * @param {string} url - Url to mapbox sprite, e.g. "url":
+ *   "mapbox://sprites/mapbox/streets-v9.png"
+ * @param {string} token - Mapbox public token
+ *
+ *   Returns {string} - url, e.g.,
+ *   "https://api.mapbox.com/styles/v1/mapbox/streets-v9/sprite.png?access_token=<token>"
  */
 export const normalizeMapboxSpriteURL = (url, token) => {
     try {
@@ -155,10 +164,13 @@ export const normalizeMapboxSpriteURL = (url, token) => {
 
 /**
  * Normalize a Mapbox glyph URL to a full URL
- * @param {string} url - url to mapbox sprite, e.g. "url": "mapbox://sprites/mapbox/streets-v9.png"
- * @param {string} token - mapbox public token
  *
- * Returns {string} - url, e.g., "https://api.mapbox.com/styles/v1/mapbox/streets-v9/sprite.png?access_token=<token>"
+ * @param {string} url - Url to mapbox sprite, e.g. "url":
+ *   "mapbox://sprites/mapbox/streets-v9.png"
+ * @param {string} token - Mapbox public token
+ *
+ *   Returns {string} - url, e.g.,
+ *   "https://api.mapbox.com/styles/v1/mapbox/streets-v9/sprite.png?access_token=<token>"
  */
 export const normalizeMapboxGlyphURL = (url, token) => {
     try {
@@ -179,16 +191,16 @@ export const normalizeMapboxGlyphURL = (url, token) => {
 /**
  * Very simplistic function that splits out mbtiles service name from the URL
  *
- * @param {String} url - URL to resolve
+ * @param {string} url - URL to resolve
  */
 const resolveNamefromURL = (url) => url.split('://')[1].split('/')[0]
 
 /**
- * Resolve a URL of a local mbtiles file to a file path
- * Expected to follow this format "mbtiles://<service_name>/*"
+ * Resolve a URL of a local mbtiles file to a file path Expected to follow this
+ * format "mbtiles://<service_name>/*"
  *
- * @param {String} tilePath - path containing mbtiles files
- * @param {String} url - url of a data source in style.json file.
+ * @param {string} tilePath - Path containing mbtiles files
+ * @param {string} url - Url of a data source in style.json file.
  */
 const resolveMBTilesURL = (tilePath, url) =>
     path.format({
@@ -198,11 +210,12 @@ const resolveMBTilesURL = (tilePath, url) =>
     })
 
 /**
- * Given a URL to a local mbtiles file, get the TileJSON for that to load correct tiles.
+ * Given a URL to a local mbtiles file, get the TileJSON for that to load
+ * correct tiles.
  *
- * @param {String} tilePath - path containing mbtiles files.
- * @param {String} url - url of a data source in style.json file.
- * @param {function} callback - function to call with (err, {data}).
+ * @param {string} tilePath - Path containing mbtiles files.
+ * @param {string} url - Url of a data source in style.json file.
+ * @param {Function} callback - Function to call with (err, {data}).
  */
 const getLocalTileJSON = (tilePath, url, callback) => {
     const mbtilesFilename = resolveMBTilesURL(tilePath, url)
@@ -244,9 +257,9 @@ const getLocalTileJSON = (tilePath, url, callback) => {
 /**
  * Fetch a tile from a local mbtiles file.
  *
- * @param {String} tilePath - path containing mbtiles files.
- * @param {String} url - url of a data source in style.json file.
- * @param {function} callback - function to call with (err, {data}).
+ * @param {string} tilePath - Path containing mbtiles files.
+ * @param {string} url - Url of a data source in style.json file.
+ * @param {Function} callback - Function to call with (err, {data}).
  */
 const getLocalTile = (tilePath, url, callback) => {
     const matches = url.match(TILE_REGEXP)
@@ -283,12 +296,12 @@ const getLocalTile = (tilePath, url, callback) => {
 }
 
 /**
- * Fetch a remotely hosted tile.
- * Empty or missing tiles return null data to the callback function, which
- * result in those tiles not rendering but no errors being raised.
+ * Fetch a remotely hosted tile. Empty or missing tiles return null data to the
+ * callback function, which result in those tiles not rendering but no errors
+ * being raised.
  *
- * @param {String} url - URL of the tile
- * @param {function} callback - callback to call with (err, {data})
+ * @param {string} url - URL of the tile
+ * @param {Function} callback - Callback to call with (err, {data})
  */
 const getRemoteTile = (url, callback) => {
     webRequest(
@@ -329,12 +342,11 @@ const getRemoteTile = (url, callback) => {
 }
 
 /**
- * Fetch a remotely hosted asset: glyph, sprite, etc
- * Anything other than a HTTP 200 response results in an exception.
+ * Fetch a remotely hosted asset: glyph, sprite, etc Anything other than a HTTP
+ * 200 response results in an exception.
  *
- *
- * @param {String} url - URL of the asset
- * @param {function} callback - callback to call with (err, {data})
+ * @param {string} url - URL of the asset
+ * @param {Function} callback - Callback to call with (err, {data})
  */
 const getRemoteAsset = (url, callback) => {
     webRequest(
@@ -363,11 +375,11 @@ const getRemoteAsset = (url, callback) => {
 }
 
 /**
- * Fetch a remotely hosted asset: glyph, sprite, etc
- * Anything other than a HTTP 200 response results in an exception.
+ * Fetch a remotely hosted asset: glyph, sprite, etc Anything other than a HTTP
+ * 200 response results in an exception.
  *
- * @param {String} url - URL of the asset
- * returns a Promise
+ * @param {string} url - URL of the asset
+ * @returns {Promise} Returns a Promise
  */
 const getRemoteAssetPromise = (url) => {
     return new Promise((resolve, reject) => {
@@ -381,14 +393,15 @@ const getRemoteAssetPromise = (url) => {
 }
 
 /**
- * requestHandler constructs a request handler for the map to load resources.
+ * RequestHandler constructs a request handler for the map to load resources.
  *
- * @param {String} tilePath - path to tilesets (optional)
- * @param {String} token - Mapbox GL token (optional; required for any Mapbox hosted resources)
- * @returns {import('./types/render').RequestHandler}
+ * @param {string} tilePath - Path to tilesets (optional)
+ * @param {string} token - Mapbox GL token (optional; required for any Mapbox
+ *   hosted resources)
+ * @returns {RequestHandler}
  */
 const getDefaultRequestHandler = (tilePath, token) => {
-    /** @type {import('./types/render').RequestHandler} */
+    /** @type {RequestHandler} */
     const handler = {
         [ResourceKind.Source]: (url, callback) => {
             if (isMBTilesURL(url)) {
@@ -413,19 +426,25 @@ const getDefaultRequestHandler = (tilePath, token) => {
         },
         [ResourceKind.Glyphs]: (url, callback) => {
             getRemoteAsset(
-                isMapboxURL(url) ? normalizeMapboxGlyphURL(url, token) : new URL(url).href,
+                isMapboxURL(url)
+                    ? normalizeMapboxGlyphURL(url, token)
+                    : new URL(url).href,
                 callback
             )
         },
         [ResourceKind.SpriteImage]: (url, callback) => {
             getRemoteAsset(
-                isMapboxURL(url) ? normalizeMapboxSpriteURL(url, token) : new URL(url).href,
+                isMapboxURL(url)
+                    ? normalizeMapboxSpriteURL(url, token)
+                    : new URL(url).href,
                 callback
             )
         },
         [ResourceKind.SpriteJSON]: (url, callback) => {
             getRemoteAsset(
-                isMapboxURL(url) ? normalizeMapboxSpriteURL(url, token) : new URL(url).href,
+                isMapboxURL(url)
+                    ? normalizeMapboxSpriteURL(url, token)
+                    : new URL(url).href,
                 callback
             )
         },
@@ -433,7 +452,7 @@ const getDefaultRequestHandler = (tilePath, token) => {
             // image source
             // probably an artifact from mapbox gl native and not part of maplibre gl native
             getRemoteAsset(new URL(url).href, callback)
-        }
+        },
     }
 
     return handler
@@ -442,9 +461,13 @@ const getDefaultRequestHandler = (tilePath, token) => {
 /**
  * Load an icon image from base64 data or a URL and add it to the map.
  *
- * @param {Object} map - Mapbox GL map object
- * @param {String} id - id of image to add
- * @param {Object} options - options object with {url, pixelRatio, sdf}.  url is required
+ * @param {object} map - Mapbox GL map object
+ * @param {string} id - Id of image to add
+ * @param {object} options - Options object with {url, pixelRatio, sdf}. url is
+ *   required
+ * @param {string} options.url
+ * @param {number} options.pixelRatio
+ * @param {boolean} options.sdf
  */
 const loadImage = async (map, id, { url, pixelRatio = 1, sdf = false }) => {
     if (!url) {
@@ -479,8 +502,9 @@ const loadImage = async (map, id, { url, pixelRatio = 1, sdf = false }) => {
 
 /**
  * Load all icon images to the map.
- * @param {Object} map - Mapbox GL map object
- * @param {Object} images - object with {id: {url, ...other image properties}}
+ *
+ * @param {object} map - Mapbox GL map object
+ * @param {object} images - Object with {id: {url, ...other image properties}}
  */
 const loadImages = async (map, images) => {
     if (images !== null) {
@@ -496,9 +520,8 @@ const loadImages = async (map, images) => {
 /**
  * Render the map, returning a Promise.
  *
- * @param {Object} map - Mapbox GL map object
- * @param {Object} options - Mapbox GL map options
- * @returns
+ * @param {object} map - Mapbox GL map object
+ * @param {object} options - Mapbox GL map options
  */
 const renderMap = (map, options) => {
     return new Promise((resolve, reject) => {
@@ -513,11 +536,11 @@ const renderMap = (map, options) => {
 
 /**
  * Convert premultiplied image buffer from Mapbox GL to RGBA PNG format.
- * @param {Uint8Array} buffer - image data buffer
- * @param {Number} width - image width
- * @param {Number} height - image height
- * @param {Number} ratio - image pixel ratio
- * @returns
+ *
+ * @param {Uint8Array} buffer - Image data buffer
+ * @param {number} width - Image width
+ * @param {number} height - Image height
+ * @param {number} ratio - Image pixel ratio
  */
 const toPNG = async (buffer, width, height, ratio) => {
     // Un-premultiply pixel values
@@ -552,23 +575,40 @@ const toPNG = async (buffer, width, height, ratio) => {
 }
 
 /**
- * Asynchronously render a map using Mapbox GL, based on layers specified in style.
- * Returns PNG image data (via async / Promise).
+ * Asynchronously render a map using Mapbox GL, based on layers specified in
+ * style. Returns PNG image data (via async / Promise).
  *
- * If zoom and center are not provided, bounds must be provided
- * and will be used to calculate center and zoom based on image dimensions.
+ * If zoom and center are not provided, bounds must be provided and will be used
+ * to calculate center and zoom based on image dimensions.
  *
- * @param {Object} style - Mapbox GL style object
- * @param {number} width - width of output map (default: 1024)
- * @param {number} height - height of output map (default: 1024)
- * @param {Object} options - configuration object containing style, zoom, center: [lng, lat],
- * width, height, bounds: [west, south, east, north], ratio, padding
- * @param {String} tilePath - path to directory containing local mbtiles files that are
- * referenced from the style.json as "mbtiles://<tileset>"
- * @param {import('./types/render').RequestHandler} [requestHandler] - (Optional) Will be used during a
- * Map.render call to request all necessary map resources (tiles, fonts...)
+ * @param {object} style - Mapbox GL style object
+ * @param {number} [width] - Width of output map (default: 1024)
+ * @param {number} [height] - Height of output map (default: 1024)
+ * @param {object} options - Configuration object
+ * @param {number[]} [options.center] - Center coordinates [lng, lat]
+ * @param {number} [options.zoom] - Zoom level
+ * @param {number[]} [options.bounds] - Bounds [west, south, east, north]
+ * @param {number} [options.bearing] - Bearing angle (0-360)
+ * @param {number} [options.pitch] - Pitch angle (0-60)
+ * @param {string} [options.token] - Mapbox access token
+ * @param {number} [options.ratio] - Pixel ratio
+ * @param {number} [options.padding] - Padding in pixels
+ * @param {object} [options.images] - Images object
+ * @param {string} [options.tilePath] - Path to directory containing local
+ *   mbtiles files
+ * @param {RequestHandler} [requestHandler] - (Optional) Will be used during a
+ *   Map.render call to request all necessary map resources (tiles, fonts...)
+ * @returns {Promise<Buffer>} - PNG image data
+ * @throws {Error} - Throws error if required parameters are missing or invalid
  */
-export const render = async (style, width = 1024, height = 1024, options, requestHandler) => {
+export const render = async (
+    style,
+    width = 1024,
+    height = 1024,
+    // @ts-ignore because switching order may break stuff
+    options,
+    requestHandler
+) => {
     const {
         bounds = null,
         bearing = 0,
@@ -673,7 +713,7 @@ export const render = async (style, width = 1024, height = 1024, options, reques
         throw new Error(msg)
     }
 
-    if (localMbtilesMatches) {
+    if (localMbtilesMatches && tilePath) {
         localMbtilesMatches.forEach((name) => {
             const mbtileFilename = path.normalize(
                 path.format({
@@ -703,10 +743,10 @@ export const render = async (style, width = 1024, height = 1024, options, reques
 
             const handler = {
                 ...getDefaultRequestHandler(tilePath, token),
-                ...requestHandler
+                ...requestHandler,
             }
 
-            /** @type {import('./types/render').RequestFn | undefined} */
+            /** @type {RequestFn | undefined} */
             const requestFn = handler[kind]
 
             try {
