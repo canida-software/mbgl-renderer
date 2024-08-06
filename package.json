@@ -5,10 +5,11 @@
     "main": "dist/index.js",
     "license": "ISC",
     "scripts": {
-        "build": "babel ./src -d ./dist && tsc",
+        "build": "babel ./src -d ./dist && tsc && npm run copy-types",
         "start": "babel-node ./src/server.js",
         "watch": "babel --watch ./src -d ./dist",
-        "test": "jest --coverage"
+        "test": "jest --coverage",
+        "copy-types": "copyfiles -u 1 ./src/types/** ./dist"
     },
     "bin": {
         "mbgl-render": "dist/cli.js",
@@ -37,6 +38,7 @@
         "@babel/preset-env": "^7.16.8",
         "babel-jest": "^29.5.0",
         "babel-preset-jest": "^29.5.0",
+        "copyfiles": "^2.4.1",
         "dotenv": "^16.0.3",
         "dotenv-flow": "^3.2.0",
         "eslint": "^8.36.0",
