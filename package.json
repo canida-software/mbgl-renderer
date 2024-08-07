@@ -1,6 +1,6 @@
 {
     "name": "mbgl-renderer",
-    "version": "0.8.7",
+    "version": "0.8.10",
     "description": "Static Map Renderer using Mapbox GL",
     "main": "dist/index.js",
     "license": "ISC",
