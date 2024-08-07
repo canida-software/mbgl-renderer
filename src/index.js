@@ -1,5 +1,7 @@
 import render, {
     getDefaultRequestHandler,
+    getRemoteAsset,
+    getRemoteTile,
     isMapboxURL,
     isMapboxStyleURL,
     normalizeMapboxStyleURL,
@@ -11,6 +13,8 @@ import { ResourceKind } from './constants'
 export {
     ResourceKind,
     getDefaultRequestHandler,
+    getRemoteAsset,
+    getRemoteTile,
     isMapboxURL,
     isMapboxStyleURL,
     normalizeMapboxStyleURL,

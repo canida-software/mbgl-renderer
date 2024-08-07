@@ -4,7 +4,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.render = exports.normalizeMapboxStyleURL = exports.normalizeMapboxSpriteURL = exports.normalizeMapboxGlyphURL = exports.isMapboxURL = exports.isMapboxStyleURL = exports.getDefaultRequestHandler = exports["default"] = void 0;
+exports.render = exports.normalizeMapboxStyleURL = exports.normalizeMapboxSpriteURL = exports.normalizeMapboxGlyphURL = exports.isMapboxURL = exports.isMapboxStyleURL = exports.getRemoteTile = exports.getRemoteAsset = exports.getDefaultRequestHandler = exports["default"] = void 0;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
@@ -323,17 +323,19 @@ var getLocalTile = function getLocalTile(tilePath, url, callback) {
 
 /**
  * Fetch a remotely hosted tile. Empty or missing tiles return null data to the
- * callback function, which result in those tiles not rendering but no errors
+ * callback function, which results in those tiles not rendering but no errors
  * being raised.
  *
  * @param {string} url - URL of the tile
  * @param {Function} callback - Callback to call with (err, {data})
+ * @param {Record<string, string>} [requestHeaders] - Optional request headers
  */
-var getRemoteTile = function getRemoteTile(url, callback) {
+var getRemoteTile = function getRemoteTile(url, callback, requestHeaders) {
   (0, _request["default"])({
     url: url,
     encoding: null,
-    gzip: true
+    gzip: true,
+    headers: requestHeaders
   }, function (err, res, data) {
     if (err) {
       return callback(err);
@@ -375,12 +377,15 @@ var getRemoteTile = function getRemoteTile(url, callback) {
  *
  * @param {string} url - URL of the asset
  * @param {Function} callback - Callback to call with (err, {data})
+ * @param {Record<string, string>} [requestHeaders] - Optional request headers
  */
-var getRemoteAsset = function getRemoteAsset(url, callback) {
+exports.getRemoteTile = getRemoteTile;
+var getRemoteAsset = function getRemoteAsset(url, callback, requestHeaders) {
   (0, _request["default"])({
     url: url,
     encoding: null,
-    gzip: true
+    gzip: true,
+    requestHeaders: requestHeaders
   }, function (err, res, data) {
     if (err) {
       return callback(err);
@@ -409,6 +414,7 @@ var getRemoteAsset = function getRemoteAsset(url, callback) {
  * @param {string} url - URL of the asset
  * @returns {Promise} Returns a Promise
  */
+exports.getRemoteAsset = getRemoteAsset;
 var getRemoteAssetPromise = function getRemoteAssetPromise(url) {
   return new Promise(function (resolve, reject) {
     getRemoteAsset(url, function (err, data) {

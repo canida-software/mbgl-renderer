@@ -3,6 +3,8 @@ export function isMapboxStyleURL(url: any): any;
 export function normalizeMapboxStyleURL(url: string, token: string): string;
 export function normalizeMapboxSpriteURL(url: string, token: string): string;
 export function normalizeMapboxGlyphURL(url: string, token: string): string;
+export function getRemoteTile(url: string, callback: Function, requestHeaders?: Record<string, string> | undefined): void;
+export function getRemoteAsset(url: string, callback: Function, requestHeaders?: Record<string, string> | undefined): void;
 export function getDefaultRequestHandler(tilePath: string | null, token: string | null): RequestHandler;
 export function render(style: object, width?: number | undefined, height?: number | undefined, options: {
     center?: number[] | undefined;

@@ -17,6 +17,18 @@ Object.defineProperty(exports, "getDefaultRequestHandler", {
     return _render.getDefaultRequestHandler;
   }
 });
+Object.defineProperty(exports, "getRemoteAsset", {
+  enumerable: true,
+  get: function get() {
+    return _render.getRemoteAsset;
+  }
+});
+Object.defineProperty(exports, "getRemoteTile", {
+  enumerable: true,
+  get: function get() {
+    return _render.getRemoteTile;
+  }
+});
 Object.defineProperty(exports, "isMapboxStyleURL", {
   enumerable: true,
   get: function get() {

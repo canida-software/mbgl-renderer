@@ -298,18 +298,20 @@ const getLocalTile = (tilePath, url, callback) => {
 
 /**
  * Fetch a remotely hosted tile. Empty or missing tiles return null data to the
- * callback function, which result in those tiles not rendering but no errors
+ * callback function, which results in those tiles not rendering but no errors
  * being raised.
  *
  * @param {string} url - URL of the tile
  * @param {Function} callback - Callback to call with (err, {data})
+ * @param {Record<string, string>} [requestHeaders] - Optional request headers
  */
-const getRemoteTile = (url, callback) => {
+export const getRemoteTile = (url, callback, requestHeaders) => {
     webRequest(
         {
             url,
             encoding: null,
             gzip: true,
+            headers: requestHeaders,
         },
         (err, res, data) => {
             if (err) {
@@ -348,13 +350,15 @@ const getRemoteTile = (url, callback) => {
  *
  * @param {string} url - URL of the asset
  * @param {Function} callback - Callback to call with (err, {data})
+ * @param {Record<string, string>} [requestHeaders] - Optional request headers
  */
-const getRemoteAsset = (url, callback) => {
+export const getRemoteAsset = (url, callback, requestHeaders) => {
     webRequest(
         {
             url,
             encoding: null,
             gzip: true,
+            requestHeaders,
         },
         (err, res, data) => {
             if (err) {
