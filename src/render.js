@@ -6,11 +6,12 @@ import path from 'path'
 import sharp from 'sharp'
 import zlib from 'zlib'
 import geoViewport from '@mapbox/geo-viewport'
-import maplibre, { ResourceKind } from '@maplibre/maplibre-gl-native'
+import maplibre from '@maplibre/maplibre-gl-native'
 import MBTiles from '@mapbox/mbtiles'
 import pino from 'pino'
 import webRequest from 'request'
 import urlLib from 'url'
+import { ResourceKind } from './constants'
 
 const TILE_REGEXP = RegExp('mbtiles://([^/]+)/(\\d+)/(\\d+)/(\\d+)')
 const MBTILES_REGEXP = /mbtiles:\/\/(\S+?)(?=[/"]+)/gi
