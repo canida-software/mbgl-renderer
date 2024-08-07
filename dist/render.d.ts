@@ -1,5 +1,8 @@
 export function isMapboxURL(url: any): any;
 export function isMapboxStyleURL(url: any): any;
+export function isMBTilesURL(url: any): any;
+export function normalizeMapboxSourceURL(url: string, token: string): string;
+export function normalizeMapboxTileURL(url: string, token: string): string;
 export function normalizeMapboxStyleURL(url: string, token: string): string;
 export function normalizeMapboxSpriteURL(url: string, token: string): string;
 export function normalizeMapboxGlyphURL(url: string, token: string): string;

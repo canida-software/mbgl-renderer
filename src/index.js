@@ -4,7 +4,10 @@ import render, {
     getRemoteTile,
     isMapboxURL,
     isMapboxStyleURL,
+    isMBTilesURL,
+    normalizeMapboxTileURL,
     normalizeMapboxStyleURL,
+    normalizeMapboxSourceURL,
     normalizeMapboxSpriteURL,
     normalizeMapboxGlyphURL,
 } from './render'
@@ -17,7 +20,10 @@ export {
     getRemoteTile,
     isMapboxURL,
     isMapboxStyleURL,
+    isMBTilesURL,
+    normalizeMapboxTileURL,
     normalizeMapboxStyleURL,
+    normalizeMapboxSourceURL,
     normalizeMapboxSpriteURL,
     normalizeMapboxGlyphURL,
 }

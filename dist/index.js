@@ -29,6 +29,12 @@ Object.defineProperty(exports, "getRemoteTile", {
     return _render.getRemoteTile;
   }
 });
+Object.defineProperty(exports, "isMBTilesURL", {
+  enumerable: true,
+  get: function get() {
+    return _render.isMBTilesURL;
+  }
+});
 Object.defineProperty(exports, "isMapboxStyleURL", {
   enumerable: true,
   get: function get() {
@@ -47,6 +53,12 @@ Object.defineProperty(exports, "normalizeMapboxGlyphURL", {
     return _render.normalizeMapboxGlyphURL;
   }
 });
+Object.defineProperty(exports, "normalizeMapboxSourceURL", {
+  enumerable: true,
+  get: function get() {
+    return _render.normalizeMapboxSourceURL;
+  }
+});
 Object.defineProperty(exports, "normalizeMapboxSpriteURL", {
   enumerable: true,
   get: function get() {
@@ -57,6 +69,12 @@ Object.defineProperty(exports, "normalizeMapboxStyleURL", {
   enumerable: true,
   get: function get() {
     return _render.normalizeMapboxStyleURL;
+  }
+});
+Object.defineProperty(exports, "normalizeMapboxTileURL", {
+  enumerable: true,
+  get: function get() {
+    return _render.normalizeMapboxTileURL;
   }
 });
 var _render = _interopRequireWildcard(require("./render"));

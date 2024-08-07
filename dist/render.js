@@ -4,7 +4,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.render = exports.normalizeMapboxStyleURL = exports.normalizeMapboxSpriteURL = exports.normalizeMapboxGlyphURL = exports.isMapboxURL = exports.isMapboxStyleURL = exports.getRemoteTile = exports.getRemoteAsset = exports.getDefaultRequestHandler = exports["default"] = void 0;
+exports.render = exports.normalizeMapboxTileURL = exports.normalizeMapboxStyleURL = exports.normalizeMapboxSpriteURL = exports.normalizeMapboxSourceURL = exports.normalizeMapboxGlyphURL = exports.isMapboxURL = exports.isMapboxStyleURL = exports.isMBTilesURL = exports.getRemoteTile = exports.getRemoteAsset = exports.getDefaultRequestHandler = exports["default"] = void 0;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
@@ -84,6 +84,7 @@ var isMBTilesURL = function isMBTilesURL(url) {
  *   "mapbox://mapbox.mapbox-streets-v7"
  * @param {string} token - Mapbox public token
  */
+exports.isMBTilesURL = isMBTilesURL;
 var normalizeMapboxSourceURL = function normalizeMapboxSourceURL(url, token) {
   try {
     var urlObject = _url["default"].parse(url);
@@ -108,6 +109,7 @@ var normalizeMapboxSourceURL = function normalizeMapboxSourceURL(url, token) {
  *   source e.g. mapbox://tiles/mapbox.mapbox-streets-v7/1/0/1.vector.pbf
  * @param {string} token - Mapbox public token
  */
+exports.normalizeMapboxSourceURL = normalizeMapboxSourceURL;
 var normalizeMapboxTileURL = function normalizeMapboxTileURL(url, token) {
   try {
     var urlObject = _url["default"].parse(url);
@@ -131,6 +133,7 @@ var normalizeMapboxTileURL = function normalizeMapboxTileURL(url, token) {
  *   "mapbox://styles/mapbox/streets-v9"
  * @param {string} token - Mapbox public token
  */
+exports.normalizeMapboxTileURL = normalizeMapboxTileURL;
 var normalizeMapboxStyleURL = function normalizeMapboxStyleURL(url, token) {
   try {
     var urlObject = _url["default"].parse(url);

@@ -52,7 +52,7 @@ maplibre.on('message', (msg) => {
 
 export const isMapboxURL = (url) => url.startsWith('mapbox://')
 export const isMapboxStyleURL = (url) => url.startsWith('mapbox://styles/')
-const isMBTilesURL = (url) => url.startsWith('mbtiles://')
+export const isMBTilesURL = (url) => url.startsWith('mbtiles://')
 
 // normalize functions derived from: https://github.com/mapbox/mapbox-gl-js/blob/master/src/util/mapbox.js
 
@@ -63,7 +63,7 @@ const isMBTilesURL = (url) => url.startsWith('mbtiles://')
  *   "mapbox://mapbox.mapbox-streets-v7"
  * @param {string} token - Mapbox public token
  */
-const normalizeMapboxSourceURL = (url, token) => {
+export const normalizeMapboxSourceURL = (url, token) => {
     try {
         const urlObject = urlLib.parse(url)
         urlObject.query = urlObject.query || {}
@@ -87,7 +87,7 @@ const normalizeMapboxSourceURL = (url, token) => {
  *   source e.g. mapbox://tiles/mapbox.mapbox-streets-v7/1/0/1.vector.pbf
  * @param {string} token - Mapbox public token
  */
-const normalizeMapboxTileURL = (url, token) => {
+export const normalizeMapboxTileURL = (url, token) => {
     try {
         const urlObject = urlLib.parse(url)
         urlObject.query = urlObject.query || {}
