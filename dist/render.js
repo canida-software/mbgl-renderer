@@ -847,6 +847,7 @@ var render = /*#__PURE__*/function () {
                 return callback(new Error(_msg12));
               }
               var handler = _objectSpread(_objectSpread({}, getDefaultRequestHandler(tilePath, token)), requestHandler);
+              logger.error('Handler object:', handler);
 
               /** @type {import('./types/render').RequestFn | undefined} */
               var requestFn = handler[kind];

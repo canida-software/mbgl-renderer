@@ -705,6 +705,7 @@ export const render = async (style, width = 1024, height = 1024, options, reques
                 ...getDefaultRequestHandler(tilePath, token),
                 ...requestHandler
             }
+            logger.error('Handler object:', handler)
 
             /** @type {import('./types/render').RequestFn | undefined} */
             const requestFn = handler[kind]
