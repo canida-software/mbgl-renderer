@@ -15,6 +15,7 @@ import {
 import { ResourceKind } from './constants'
 
 export {
+    render,
     ResourceKind,
     getDefaultRequestHandler,
     getRemoteAsset,
@@ -28,4 +29,3 @@ export {
     normalizeMapboxSpriteURL,
     normalizeMapboxGlyphURL,
 }
-export default render

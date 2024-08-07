@@ -9,7 +9,6 @@ Object.defineProperty(exports, "ResourceKind", {
     return _constants.ResourceKind;
   }
 });
-exports["default"] = void 0;
 Object.defineProperty(exports, "getDefaultRequestHandler", {
   enumerable: true,
   get: function get() {
@@ -76,7 +75,11 @@ Object.defineProperty(exports, "normalizeMapboxTileURL", {
     return _render.normalizeMapboxTileURL;
   }
 });
+Object.defineProperty(exports, "render", {
+  enumerable: true,
+  get: function get() {
+    return _render.render;
+  }
+});
 var _render = require("./render");
 var _constants = require("./constants");
-var _default = _render.render;
-exports["default"] = _default;
