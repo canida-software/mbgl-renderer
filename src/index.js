@@ -1,4 +1,5 @@
-import render, {
+import {
+    render,
     getDefaultRequestHandler,
     getRemoteAsset,
     getRemoteTile,

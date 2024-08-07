@@ -11,6 +11,6 @@ import { normalizeMapboxStyleURL } from './render';
 import { normalizeMapboxSourceURL } from './render';
 import { normalizeMapboxSpriteURL } from './render';
 import { normalizeMapboxGlyphURL } from './render';
-import render from './render';
+import { render } from './render';
 export { ResourceKind, getDefaultRequestHandler, getRemoteAsset, getRemoteTile, isMapboxURL, isMapboxStyleURL, isMBTilesURL, normalizeMapboxTileURL, normalizeMapboxStyleURL, normalizeMapboxSourceURL, normalizeMapboxSpriteURL, normalizeMapboxGlyphURL };
 //# sourceMappingURL=index.d.ts.map
