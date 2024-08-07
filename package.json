@@ -11,6 +11,9 @@
         "test": "jest --coverage",
         "copy-types": "copyfiles -u 1 ./src/types/** ./dist"
     },
+    "files": [
+        "dist/**"
+    ],
     "bin": {
         "mbgl-render": "dist/cli.js",
         "mbgl-server": "dist/server.js"
