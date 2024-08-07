@@ -401,7 +401,7 @@ const getRemoteAssetPromise = (url) => {
  *   Mapbox hosted resources)
  * @returns {RequestHandler}
  */
-const getDefaultRequestHandler = (tilePath, token) => {
+export const getDefaultRequestHandler = (tilePath, token) => {
     /** @type {RequestHandler} */
     const handler = {
         [ResourceKind.Source]: (url, callback) => {

@@ -11,6 +11,12 @@ Object.defineProperty(exports, "ResourceKind", {
   }
 });
 exports["default"] = void 0;
+Object.defineProperty(exports, "getDefaultRequestHandler", {
+  enumerable: true,
+  get: function get() {
+    return _render.getDefaultRequestHandler;
+  }
+});
 Object.defineProperty(exports, "isMapboxStyleURL", {
   enumerable: true,
   get: function get() {
