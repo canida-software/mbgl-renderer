@@ -1,7 +1,6 @@
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-var _typeof = require("@babel/runtime/helpers/typeof");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -16,13 +15,12 @@ var _path = _interopRequireDefault(require("path"));
 var _sharp = _interopRequireDefault(require("sharp"));
 var _zlib = _interopRequireDefault(require("zlib"));
 var _geoViewport = _interopRequireDefault(require("@mapbox/geo-viewport"));
-var _maplibreGlNative = _interopRequireWildcard(require("@maplibre/maplibre-gl-native"));
+var _maplibreGlNative = _interopRequireDefault(require("@maplibre/maplibre-gl-native"));
 var _mbtiles = _interopRequireDefault(require("@mapbox/mbtiles"));
 var _pino = _interopRequireDefault(require("pino"));
 var _request = _interopRequireDefault(require("request"));
 var _url = _interopRequireDefault(require("url"));
-function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+var _constants = require("./constants");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2["default"])(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 var TILE_REGEXP = RegExp('mbtiles://([^/]+)/(\\d+)/(\\d+)/(\\d+)');
@@ -433,7 +431,7 @@ var getRemoteAssetPromise = function getRemoteAssetPromise(url) {
 var getDefaultRequestHandler = function getDefaultRequestHandler(tilePath, token) {
   var _handler;
   /** @type {RequestHandler} */
-  var handler = (_handler = {}, (0, _defineProperty2["default"])(_handler, _maplibreGlNative.ResourceKind.Source, function (url, callback) {
+  var handler = (_handler = {}, (0, _defineProperty2["default"])(_handler, _constants.ResourceKind.Source, function (url, callback) {
     if (isMBTilesURL(url)) {
       if (!tilePath) {
         var msg = "Requesting local tiles \"".concat(url, "\" but parameter tilePath is missing.");
@@ -449,7 +447,7 @@ var getDefaultRequestHandler = function getDefaultRequestHandler(tilePath, token
     } else {
       getRemoteAsset(url, callback);
     }
-  }), (0, _defineProperty2["default"])(_handler, _maplibreGlNative.ResourceKind.Tile, function (url, callback) {
+  }), (0, _defineProperty2["default"])(_handler, _constants.ResourceKind.Tile, function (url, callback) {
     if (isMBTilesURL(url)) {
       if (!tilePath) {
         var msg = "Requesting local tile \"".concat(url, "\" but parameter tilePath is missing.");
@@ -468,19 +466,19 @@ var getDefaultRequestHandler = function getDefaultRequestHandler(tilePath, token
     } else {
       getRemoteTile(url, callback);
     }
-  }), (0, _defineProperty2["default"])(_handler, _maplibreGlNative.ResourceKind.Glyphs, function (url, callback) {
+  }), (0, _defineProperty2["default"])(_handler, _constants.ResourceKind.Glyphs, function (url, callback) {
     if (isMapboxURL(url) && !token) {
       var msg = "Requesting MapBox tiles \"".concat(url, "\" but parameter token is missing.");
       return callback(new Error(msg));
     }
     getRemoteAsset(isMapboxURL(url) && token ? normalizeMapboxGlyphURL(url, token) : new URL(url).href, callback);
-  }), (0, _defineProperty2["default"])(_handler, _maplibreGlNative.ResourceKind.SpriteImage, function (url, callback) {
+  }), (0, _defineProperty2["default"])(_handler, _constants.ResourceKind.SpriteImage, function (url, callback) {
     if (isMapboxURL(url) && !token) {
       var msg = "Requesting MapBox tiles \"".concat(url, "\" but parameter token is missing.");
       return callback(new Error(msg));
     }
     getRemoteAsset(isMapboxURL(url) && token ? normalizeMapboxSpriteURL(url, token) : new URL(url).href, callback);
-  }), (0, _defineProperty2["default"])(_handler, _maplibreGlNative.ResourceKind.SpriteJSON, function (url, callback) {
+  }), (0, _defineProperty2["default"])(_handler, _constants.ResourceKind.SpriteJSON, function (url, callback) {
     if (isMapboxURL(url) && !token) {
       var msg = "Requesting MapBox tiles \"".concat(url, "\" but parameter token is missing.");
       return callback(new Error(msg));
@@ -708,8 +706,9 @@ var toPNG = /*#__PURE__*/function () {
  * @param {object} [options.images] - Images object
  * @param {string} [options.tilePath] - Path to directory containing local
  *   mbtiles files
- * @param {RequestHandler} [requestHandler] - (Optional) Will be used during a
- *   Map.render call to request all necessary map resources (tiles, fonts...)
+ * @param {PartialRequestHandler} [requestHandler] - (Optional) Will be used
+ *   during a Map.render call to request all necessary map resources (tiles,
+ *   fonts...)
  * @returns {Promise<Buffer>} - PNG image data
  * @throws {Error} - Throws error if required parameters are missing or invalid
  */

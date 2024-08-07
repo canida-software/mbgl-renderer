@@ -14,7 +14,7 @@ export function render(style: object, width?: number | undefined, height?: numbe
     padding?: number | undefined;
     images?: object;
     tilePath?: string | undefined;
-}, requestHandler?: RequestHandler | undefined): Promise<Buffer>;
+}, requestHandler?: Partial<Omit<RequestHandler, 7>> | undefined): Promise<Buffer>;
 export default render;
 import type { RequestHandler } from './types/render';
 //# sourceMappingURL=render.d.ts.map

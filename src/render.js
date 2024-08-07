@@ -1,4 +1,4 @@
-/** @import {RequestHandler, RequestFn} from './types/render' */
+/** @import {RequestHandler, RequestFn, PartialRequestHandler} from './types/render' */
 /* eslint-disable no-new */
 import fs from 'fs'
 import path from 'path'
@@ -625,8 +625,9 @@ const toPNG = async (buffer, width, height, ratio) => {
  * @param {object} [options.images] - Images object
  * @param {string} [options.tilePath] - Path to directory containing local
  *   mbtiles files
- * @param {RequestHandler} [requestHandler] - (Optional) Will be used during a
- *   Map.render call to request all necessary map resources (tiles, fonts...)
+ * @param {PartialRequestHandler} [requestHandler] - (Optional) Will be used
+ *   during a Map.render call to request all necessary map resources (tiles,
+ *   fonts...)
  * @returns {Promise<Buffer>} - PNG image data
  * @throws {Error} - Throws error if required parameters are missing or invalid
  */
